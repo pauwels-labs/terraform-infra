@@ -1,7 +1,3 @@
-#data "aws_iam_policy" "iam_user_change_password" {
-#  arn = "arn:aws:iam::aws:policy/IAMUserChangePassword"
-#}
-
 data "aws_iam_policy" "administrator_access" {
   arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
@@ -41,15 +37,25 @@ data "aws_iam_policy_document" "iam_user_change_password" {
     ]
   }
   statement {
-    sid = "ChangeOwnPasswordAndListOwnUser"
+    sid = "ChangeOwnPassword"
     effect = "Allow"
     actions = [
       "iam:GetUser",
       "iam:ListUsers",
-      "iam:ChangePassword"     
-    ]    
+      "iam:ChangePassword"
+    ]
     resources = [
       "arn:aws:iam::*:user/$${aws:username}"
+    ]
+  }
+  statement {
+    sid = "ListUsers"
+    effect = "Allow"
+    actions = [
+      "iam:ListUsers"
+    ]
+    resources = [
+      "*"
     ]
   }
 }
