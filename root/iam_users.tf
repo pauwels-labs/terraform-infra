@@ -1,0 +1,65 @@
+# User accounts
+resource "aws_iam_user" "pauwels" {
+  name = "pauwels"
+  tags = {
+    full-name = "Alexandre Pauwels"
+    email = "alex@pauwelslabs.com"
+  }  
+}
+
+resource "aws_iam_user" "sacksminnelli" {
+  name = "sacksminnelli"
+  tags = {
+    full-name = "Hugh Whelan"
+    email = "hughwhelan210@gmail.com"
+  }  
+}
+
+# AWS Console access to user accounts
+resource "aws_iam_user_login_profile" "pauwels" {
+  user = aws_iam_user.pauwels.name
+  pgp_key = "keybase:pauwels"
+  password_length = 32  
+}
+
+output "pauwels_login_encrypted_password" {
+  value = aws_iam_user_login_profile.pauwels.encrypted_password
+}
+
+resource "aws_iam_user_login_profile" "sacksminnelli" {
+  user = aws_iam_user.sacksminnelli.name
+  pgp_key = "keybase:sacksminnelli"
+  password_length = 32  
+}
+
+output "sacksminnelli_login_encrypted_password" {
+  value = aws_iam_user_login_profile.sacksminnelli.encrypted_password
+}
+
+# Group memberships
+resource "aws_iam_user_group_membership" "pauwels" {
+  user = aws_iam_user.pauwels.name
+
+  groups = [
+    aws_iam_group.root_administrators.name,
+    aws_iam_group.self_service_auth_with_mfa.name,
+    aws_iam_group.workloads_sdlc_engineering_dev_administrators.name,
+    aws_iam_group.deployments_prod_engineering_deployments_prod_administrators.name,
+    aws_iam_group.infrastructure_prod_dns_prod_administrators.name,
+    aws_iam_group.infrastructure_prod_artifacts_prod_administrators.name,
+    aws_iam_group.infrastructure_prod_keys_prod_administrators.name,    
+    aws_iam_group.terraform_backend.name,
+  ]
+}
+
+resource "aws_iam_user_group_membership" "sacksminnelli" {
+  user = aws_iam_user.sacksminnelli.name
+
+  groups = [
+    aws_iam_group.root_administrators.name,
+    aws_iam_group.self_service_auth_with_mfa.name,
+    aws_iam_group.workloads_sdlc_engineering_dev_administrators.name,
+    aws_iam_group.infrastructure_prod_artifacts_prod_administrators.name,    
+    aws_iam_group.terraform_backend.name,
+  ]
+}
