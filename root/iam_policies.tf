@@ -42,7 +42,8 @@ data "aws_iam_policy_document" "iam_user_change_password" {
     actions = [
       "iam:GetUser",
       "iam:ListUsers",
-      "iam:ChangePassword"
+      "iam:ChangePassword",
+      "iam:GetLoginProfile"
     ]
     resources = [
       "arn:aws:iam::*:user/$${aws:username}"
