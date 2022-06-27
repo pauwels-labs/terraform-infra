@@ -80,7 +80,7 @@ resource "aws_iam_group" "new_users" {
 
 resource "aws_iam_group_policy_attachment" "new_users_change_password" {
   group      = aws_iam_group.new_users.name
-  policy_arn = data.aws_iam_policy.iam_user_change_password.arn
+  policy_arn = aws_iam_policy.iam_user_change_password.arn
 }
 
 resource "aws_iam_group" "self_service_auth_with_mfa" {
