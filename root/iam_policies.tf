@@ -1,6 +1,6 @@
-data "aws_iam_policy" "iam_user_change_password" {
-  arn = "arn:aws:iam::aws:policy/IAMUserChangePassword"
-}
+#data "aws_iam_policy" "iam_user_change_password" {
+#  arn = "arn:aws:iam::aws:policy/IAMUserChangePassword"
+#}
 
 data "aws_iam_policy" "administrator_access" {
   arn = "arn:aws:iam::aws:policy/AdministratorAccess"
@@ -19,6 +19,38 @@ data "aws_iam_policy_document" "root_administrator_assume_role_policy" {
     actions = [
       "sts:AssumeRole"      
     ]    
+  }
+}
+
+resource "aws_iam_policy" "iam_user_change_password" {
+  name = "IAMUserChangePasswordAndListOwnUser"
+  path = "/"
+  description = "Grants user permissions to view and change their own password"
+  policy = data.aws_iam_policy_document.iam_user_change_password.json
+}
+
+data "aws_iam_policy_document" "iam_user_change_password" {
+  statement {
+    sid = "ViewAccountPasswordRequirements"
+    effect = "Allow"
+    actions = [
+      "iam:GetAccountPasswordPolicy"
+    ]
+    resources = [
+      "*"
+    ]
+  }
+  statement {
+    sid = "ChangeOwnPasswordAndListOwnUser"
+    effect = "Allow"
+    actions = [
+      "iam:GetUser",
+      "iam:ListUsers",
+      "iam:ChangePassword"     
+    ]    
+    resources = [
+      "arn:aws:iam::*:user/$${aws:username}"
+    ]
   }
 }
 
