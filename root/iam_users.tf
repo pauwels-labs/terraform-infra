@@ -50,7 +50,7 @@ resource "aws_iam_user_login_profile" "kapdin" {
   password_length = 32  
 }
 
-output "sacksminnelli_login_encrypted_password" {
+output "kapdin_login_encrypted_password" {
   value = aws_iam_user_login_profile.kapdin.encrypted_password
 }
 
