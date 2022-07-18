@@ -107,6 +107,15 @@ resource "aws_organizations_account" "keys_prod" {
   iam_user_access_to_billing = "ALLOW"  
 }
 
+# Pauwels Labs' primary VPN account (all VPN resources should be here
+# and be peered into other VPCs)
+resource "aws_organizations_account" "vpn_prod" {
+  name  = "VPN Prod"
+  email = "alex+vpn-prod@pauwelslabs.com"
+  parent_id = aws_organizations_organizational_unit.infrastructure_prod.id
+  iam_user_access_to_billing = "ALLOW"  
+}
+
 # Service workloads, divided into software-development lifecycle (SDLC)
 # and production OUs
 resource "aws_organizations_organizational_unit" "workloads" {

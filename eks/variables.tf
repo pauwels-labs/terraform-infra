@@ -3,6 +3,10 @@ variable "cluster_count" {
   description = "Number of clusters ilke this to deploy"
   type        = number
   default     = 1
+  validation {
+    condition = var.cluster_count <= 25
+    error_message = "Number of clusters cannot exceed 25 due to subnet masking"
+  }
 }
 
 variable "cluster_region" {
@@ -13,6 +17,15 @@ variable "cluster_region" {
 
 variable "cluster_name" {
   description = "Name of the cluster"
+  type        = string
+  validation {
+    condition     = length(var.cluster_name) <= 26
+    error_message = "Cluster name must be 26 characters or less due to IAM role name restrictions"
+  }
+}
+
+variable "cluster_description" {
+  description = "Short description for the purpose of the cluster to add as a tag"
   type        = string
 }
 
@@ -27,6 +40,39 @@ variable "cluster_service_cidr" {
   type        = string
 }
 
+variable "cluster_instance_types" {
+  description = "Array of acceptable instance types to use for the cluster"
+  type        = list
+  default     = [
+    "m5.large",
+    "m5d.large",
+    "m5a.large",
+    "m5ad.large",
+    "m5n.large",
+    "m5dn.large",
+    "m5zn.large",
+    "t3.large",
+    "t3a.large",
+  ]
+}
+
+variable "instance_disk_size" {
+  description = "Size of the root disk attached to cluster instances"
+  type        = number
+  default     = 100
+}
+
+variable "node_group_min_size" {
+  description = "Minimum number of nodes in a node group"
+  type        = number
+  default     = 1
+}
+
+variable "node_group_max_size" {
+  description = "Maximum number of nodes that the autoscaler can scale a node group to"
+  type        = number
+  default     = 5
+}
 
 // VPC settings
 variable "cluster_vpc_cidr" {
@@ -38,6 +84,16 @@ variable "az_count" {
   description = "Number of availability zones to use"
   type        = number
   default     = 3
+  validation {
+    condition     = var.az_count <= 5
+    error_message = "The maximum number of availability zones in any AWS region is 5"
+  }
+}
+
+variable "ha_nat_gateways" {
+  description = "If set to true, each AZ will receive a separate NAT gateway"
+  type        = bool
+  default     = true
 }
 
 // Account information

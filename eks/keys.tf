@@ -14,6 +14,12 @@ resource "aws_kms_key" "envelope_encryption" {
   key_usage                = "ENCRYPT_DECRYPT"
   customer_master_key_spec = "SYMMETRIC_DEFAULT"
   policy                   = data.aws_iam_policy_document.envelope_encryption_key_policy.json
+
+  tags = {
+    Name        = "k8s-envelope-encryption-${var.cluster_name}-${count.index}"
+    Description = "Used as the key encryption key to decrypt data encryption keys that encrypt Kubernetes secrets in the ${var.cluster_name}-${count.index} cluster"
+    Cluster     = "${var.cluster_name}-${count.index}"
+  }
 }
 
 data "aws_iam_policy_document" "envelope_encryption_key_policy" {

@@ -58,6 +58,16 @@ resource "aws_iam_group_policy_attachment" "infrastructure_prod_keys_prod_admini
   policy_arn = aws_iam_policy.grant_infrastructure_prod_keys_prod_administrator_role.arn
 }
 
+# Group for all users with access to Infrastructure/Prod/VPN Prod/OrganizationAccountAccessRole
+resource "aws_iam_group" "infrastructure_prod_vpn_prod_administrators" {
+  name = "InfrastructureProdVPNProdAdministrators"
+}
+
+resource "aws_iam_group_policy_attachment" "infrastructure_prod_vpn_prod_administrator_role" {
+  group = aws_iam_group.infrastructure_prod_vpn_prod_administrators.name
+  policy_arn = aws_iam_policy.grant_infrastructure_prod_vpn_prod_administrator_role.arn
+}
+
 # Group for all root account administrators
 resource "aws_iam_group" "root_administrators" {
   name = "RootAdministrators"
