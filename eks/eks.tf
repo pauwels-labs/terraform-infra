@@ -43,9 +43,10 @@ resource "aws_iam_role_policy_attachment" "grant_eks_create_cluster_envelope_enc
 module "eks" {
   source    = "terraform-aws-modules/eks/aws"
   version   = "18.26.3"
-  count   = var.cluster_count
+  count     = var.cluster_count
   providers = {
-    aws = aws.cluster
+    aws        = aws.cluster
+    kubernetes = kubernetes.c0
   }
 
   cluster_name                    = "${var.cluster_name}-${count.index}"
