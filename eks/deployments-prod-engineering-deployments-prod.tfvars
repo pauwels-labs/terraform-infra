@@ -5,7 +5,7 @@ cluster_description  = "Contains infrastructure management services for Pauwels 
 cluster_version      = "1.22"
 cluster_vpc_cidr     = "10.10.0.0/16"
 cluster_service_cidr = "10.100.0.0/16"
-ha_nat_gateways      = true
+ha_nat_gateways      = false
 
 az_count = 3
 

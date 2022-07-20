@@ -171,7 +171,7 @@ resource "aws_route_table_association" "public" {
 
 resource "aws_route_table" "public_nat_gateways" {
   provider = aws.cluster
-  count    = local.subnet_count
+  count    = local.nat_gateway_count
 
   vpc_id = aws_vpc.cluster.id
 
@@ -191,7 +191,7 @@ resource "aws_route_table" "public_nat_gateways" {
 
 resource "aws_route_table_association" "public_nat_gateways" {
   provider = aws.cluster
-  count    = local.subnet_count
+  count    = local.nat_gateway_count
 
   route_table_id = aws_route_table.public_nat_gateways[count.index].id
   subnet_id      = aws_subnet.public_nat_gateways[count.index].id
