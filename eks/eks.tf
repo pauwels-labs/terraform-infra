@@ -40,53 +40,53 @@ resource "aws_iam_role_policy_attachment" "grant_eks_create_cluster_envelope_enc
   policy_arn = aws_iam_policy.grant_eks_create_cluster_envelope_encryption_key_access[count.index].arn
 }
 
-module "eks" {
-  source = "./hack"
-  providers = {
-    aws = aws.cluster
-  }
+# module "eks" {
+#   source = "./hack"
+#   providers = {
+#     aws = aws.cluster
+#   }
 
-  az_count                 = local.az_count
-  cluster_account_role_arn = local.cluster_account_role_arn
+#   az_count                 = local.az_count
+#   cluster_account_role_arn = local.cluster_account_role_arn
 
-  cluster_count                   = var.cluster_count
-  cluster_name                    = var.cluster_name
-  cluster_version                 = var.cluster_version
-  cluster_endpoint_private_access = true
-  cluster_endpoint_public_access  = false
-  cluster_description             = var.cluster_description
+#   cluster_count                   = var.cluster_count
+#   cluster_name                    = var.cluster_name
+#   cluster_version                 = var.cluster_version
+#   cluster_endpoint_private_access = true
+#   cluster_endpoint_public_access  = true
+#   cluster_description             = var.cluster_description
 
-  cluster_ip_family         = "ipv4"
-  cluster_service_ipv4_cidr = var.cluster_service_cidr
+#   cluster_ip_family         = "ipv4"
+#   cluster_service_ipv4_cidr = var.cluster_service_cidr
 
-  cluster_addons = {
-    coredns = {
-      resolve_conflicts = "OVERWRITE"
-    }
-    kube-proxy = {}
-    vpc-cni = {
-      resolve_conflicts = "OVERWRITE"
-    }
-  }
+#   cluster_addons = {
+#     coredns = {
+#       resolve_conflicts = "OVERWRITE"
+#     }
+#     kube-proxy = {}
+#     vpc-cni = {
+#       resolve_conflicts = "OVERWRITE"
+#     }
+#   }
 
-  encryption_keys = aws_kms_key.envelope_encryption
+#   encryption_keys = aws_kms_key.envelope_encryption
 
-  vpc_id  = aws_vpc.cluster.id
-  subnets = aws_subnet.private
+#   vpc_id  = aws_vpc.cluster.id
+#   subnets = aws_subnet.private
 
-  manage_aws_auth_configmap = true
+#   manage_aws_auth_configmap = true
 
-  eks_managed_node_group_defaults = {
-    ami_type       = "BOTTLEROCKET_x86_64"
-    platform       = "bottlerocket"
-    capacity_type  = "SPOT"
-    instance_types = var.cluster_instance_types
-  }
+#   eks_managed_node_group_defaults = {
+#     ami_type       = "BOTTLEROCKET_x86_64"
+#     platform       = "bottlerocket"
+#     capacity_type  = "SPOT"
+#     instance_types = var.cluster_instance_types
+#   }
 
-  disk_size = var.instance_disk_size
-  min_size  = var.node_group_min_size
-  max_size  = var.node_group_max_size
-}
+#   disk_size = var.instance_disk_size
+#   min_size  = var.node_group_min_size
+#   max_size  = var.node_group_max_size
+# }
 
 # module "eks" {
 #   source    = "terraform-aws-modules/eks/aws"
