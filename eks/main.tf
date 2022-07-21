@@ -29,25 +29,3 @@ provider "aws" {
     role_arn = local.keys_account_role_arn
   }  
 }
-
-provider "kubernetes" {
-  alias                  = "c0"
-  host                   = module.eks[0].cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks[0].cluster_certificate_authority_data)
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    args        = ["eks", "get-token", "--cluster-name", module.eks[0].cluster_id, "--region", var.cluster_region, "--profile", "mfa", "--role-arn", local.cluster_account_role_arn]
-  }
-}
-
-provider "kubernetes" {
-  alias                  = "c1"
-  host                   = module.eks[1].cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks[1].cluster_certificate_authority_data)
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    args        = ["eks", "get-token", "--cluster-name", module.eks[1].cluster_id, "--region", var.cluster_region, "--profile", "mfa", "--role-arn", local.cluster_account_role_arn]
-  }
-}

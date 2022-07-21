@@ -1,6 +1,6 @@
 // Cluster information
 variable "cluster_count" {
-  description = "Number of clusters ilke this to deploy"
+  description = "Number of clusters like this to deploy"
   type        = number
   default     = 1
   validation {
