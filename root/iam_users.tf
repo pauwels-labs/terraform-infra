@@ -89,7 +89,7 @@ resource "aws_iam_user_group_membership" "kapdin" {
     aws_iam_group.root_administrators.name,
     aws_iam_group.self_service_auth_with_mfa.name,
     aws_iam_group.workloads_sdlc_engineering_dev_administrators.name,
-    aws_iam_group.deployments_prod_engineering_deployments_prod_admzinistrators.name,
+    aws_iam_group.deployments_prod_engineering_deployments_prod_administrators.name,
     aws_iam_group.infrastructure_prod_dns_prod_administrators.name,
     aws_iam_group.infrastructure_prod_artifacts_prod_administrators.name,
     aws_iam_group.infrastructure_prod_keys_prod_administrators.name,
