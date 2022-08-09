@@ -21,7 +21,7 @@ module "c18" {
   cluster_name                    = "${var.cluster_name}-${local.c18}"
   cluster_version                 = var.cluster_version
   cluster_endpoint_private_access = true
-  cluster_endpoint_public_access  = true
+  cluster_endpoint_public_access  = false
   cluster_tags                    = {
     Name        = "${var.cluster_name}-${local.c18}"
     Description = var.cluster_description

@@ -14,7 +14,7 @@ terraform {
 
 provider "aws" {
   alias = "cluster"
-  region = "eu-west-1"
+  region = var.cluster_region
   profile = "mfa"  
   assume_role {
     role_arn = local.cluster_account_role_arn
