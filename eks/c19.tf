@@ -1,29 +1,31 @@
 provider "kubernetes" {
   alias                  = "c19"
-  host                   = local.c19_create ? module.c19[0].cluster_endpoint : ""
-  cluster_ca_certificate = base64decode(local.c19_create ? module.c19[0].cluster_certificate_authority_data : "")
+  host                   = local.cluster_create[local.cluster_index[19]] ? module.c19[0].cluster_endpoint : ""
+  #host = module.c19[0].cluster_endpoint
+  cluster_ca_certificate = base64decode(local.cluster_create[local.cluster_index[19]] ? module.c19[0].cluster_certificate_authority_data : "")
+  #cluster_ca_certificate = base64decode(module.c19[0].cluster_certificate_authority_data)
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
     command     = "aws"
-    args        = ["eks", "get-token", "--cluster-name", local.c19_create ? module.c19[0].cluster_id : "", "--region", var.cluster_region, "--profile", "mfa", "--role-arn", local.cluster_account_role_arn]
+    args        = ["eks", "get-token", "--cluster-name", local.cluster_create[local.cluster_index[19]] ? module.c19[0].cluster_id : "", "--region", var.cluster_region, "--profile", "mfa", "--role-arn", local.cluster_account_role_arn]
   }
 }
 
 module "c19" {
   source    = "terraform-aws-modules/eks/aws"
   version   = "18.26.3"
-  count     = local.c19_create ? 1 : 0
+  count     = local.cluster_create[local.cluster_index[19]] ? 1 : 0
   providers = {
     aws        = aws.cluster
     kubernetes = kubernetes.c19
   }
 
-  cluster_name                    = "${var.cluster_name}-${local.c19}"
+  cluster_name                    = "${var.cluster_name}-${local.cluster_index[19]}"
   cluster_version                 = var.cluster_version
   cluster_endpoint_private_access = true
-  cluster_endpoint_public_access  = false
+  cluster_endpoint_public_access  = true
   cluster_tags                    = {
-    Name        = "${var.cluster_name}-${local.c19}"
+    Name        = "${var.cluster_name}-${local.cluster_index[19]}"
     Description = var.cluster_description
   }
 
@@ -40,9 +42,14 @@ module "c19" {
     }
   }
 
-  cluster_encryption_config = [
+  iam_role_name            = local.cluster_iam_role_name[local.cluster_index[19]]
+  iam_role_use_name_prefix = false
+
+  cluster_encryption_policy_name            = local.cluster_encryption_policy_name[local.cluster_index[19]]
+  cluster_encryption_policy_use_name_prefix = false
+  cluster_encryption_config                 = [
     {
-      provider_key_arn = aws_kms_key.envelope_encryption[local.c19].arn
+      provider_key_arn = aws_kms_key.envelope_encryption[local.cluster_index[19]].arn
       resources        = [
         "secrets"
       ]
@@ -50,7 +57,7 @@ module "c19" {
   ]
 
   vpc_id     = aws_vpc.cluster.id
-  subnet_ids = [for subnet in slice(aws_subnet.private, local.c19 * local.az_count, local.c19 * local.az_count + local.az_count): subnet.id]
+  subnet_ids = [for subnet in slice(aws_subnet.private, local.cluster_index[19] * local.az_count, local.cluster_index[19] * local.az_count + local.az_count): subnet.id]
 
   manage_aws_auth_configmap = true
 
@@ -62,9 +69,9 @@ module "c19" {
   }
 
   eks_managed_node_groups = {
-    for subnet in slice(aws_subnet.private, local.c19 * local.az_count, local.c19 * local.az_count + local.az_count) : subnet.availability_zone => {
-      name        = "${var.cluster_name}-${local.c19}-${subnet.availability_zone}"
-      description = "EKS node group in a private subnet for the ${var.cluster_name}-${local.c19} cluster scoped to the ${subnet.availability_zone} AZ"
+    for subnet in slice(aws_subnet.private, local.cluster_index[19] * local.az_count, local.cluster_index[19] * local.az_count + local.az_count) : subnet.availability_zone => {
+      name        = "${var.cluster_name}-${local.cluster_index[19]}-${subnet.availability_zone}"
+      description = "EKS node group in a private subnet for the ${var.cluster_name}-${local.cluster_index[19]} cluster scoped to the ${subnet.availability_zone} AZ"
 
       subnet_ids = [subnet.id]
       disk_size  = var.instance_disk_size

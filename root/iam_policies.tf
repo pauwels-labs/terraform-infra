@@ -293,6 +293,27 @@ resource "aws_iam_policy" "grant_deployments_prod_engineering_deployments_prod_a
   policy = data.aws_iam_policy_document.grant_deployments_prod_engineering_deployments_prod_administrator_role.json
 }
 
+data "aws_iam_policy_document" "grant_sandbox_kacper_dworski_administrator_role" {
+  statement {
+    sid = "AllowAssumeOrganizationAccountAccessRole"
+    effect = "Allow"
+    actions = [
+      "sts:AssumeRole"
+    ]
+    resources = [
+      "arn:aws:iam::${aws_organizations_account.kacper_dworski.id}:role/OrganizationAccountAccessRole"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "grant_sandbox_kacper_dworski_administrator_role" {
+  name = "GrantAccessToSandboxKacperDworskiAdministratorRole"
+  path = "/"
+  description = "Grants access to the OrganizationAccountAccessRole in the Sandbox/Kacper Dworski account"
+
+  policy = data.aws_iam_policy_document.grant_sandbox_kacper_dworski_administrator_role.json
+}
+
 data "aws_iam_policy_document" "grant_self_service_auth_with_mfa" {
   statement {
     sid = "AllowViewAccountInfo"    

@@ -67,6 +67,7 @@ resource "aws_iam_user_group_membership" "pauwels" {
     aws_iam_group.infrastructure_prod_artifacts_prod_administrators.name,
     aws_iam_group.infrastructure_prod_keys_prod_administrators.name,
     aws_iam_group.infrastructure_prod_vpn_prod_administrators.name,
+    aws_iam_group.sandbox_kacper_dworski_administrators.name,
     aws_iam_group.terraform_backend.name,
   ]
 }
@@ -87,6 +88,8 @@ resource "aws_iam_user_group_membership" "kapdin" {
     aws_iam_group.deployments_prod_engineering_deployments_prod_administrators.name,
     aws_iam_group.infrastructure_prod_dns_prod_administrators.name,
     aws_iam_group.infrastructure_prod_artifacts_prod_administrators.name,
+    aws_iam_group.infrastructure_prod_keys_prod_administrators.name,
+    aws_iam_group.sandbox_kacper_dworski_administrators.name,
     aws_iam_group.terraform_backend.name,
   ]
 }

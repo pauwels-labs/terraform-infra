@@ -10,8 +10,10 @@ do
     if [ "$i" -lt 10 ]; then
         cp c00.tf "c0$i.tf"
         sed -i -e "s/c0/c$i/g" "c0$i.tf"
+        sed -i -e "s/cluster_index\[0\]/cluster_index[$i]/g" "c0$i.tf"
     else
         cp c00.tf "c$i.tf"
         sed -i -e "s/c0/c$i/g" "c$i.tf"
+        sed -i -e "s/cluster_index\[0\]/cluster_index[$i]/g" "c$i.tf"
     fi
 done
