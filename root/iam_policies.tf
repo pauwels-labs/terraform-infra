@@ -230,6 +230,27 @@ resource "aws_iam_policy" "grant_infrastructure_prod_keys_prod_administrator_rol
   policy = data.aws_iam_policy_document.grant_infrastructure_prod_keys_prod_administrator_role.json
 }
 
+data "aws_iam_policy_document" "grant_infrastructure_prod_vpn_prod_administrator_role" {
+  statement {
+    sid = "AllowAssumeOrganizationAccountAccessRole"
+    effect = "Allow"    
+    actions = [
+      "sts:AssumeRole"
+    ]
+    resources = [
+      "arn:aws:iam::${aws_organizations_account.vpn_prod.id}:role/OrganizationAccountAccessRole"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "grant_infrastructure_prod_vpn_prod_administrator_role" {
+  name = "GrantAccessToInfrastructureProdVPNProdAdministratorRole"
+  path = "/"
+  description = "Grants access to the OrganizationAccountAccessRole in the Infrastructure/Prod/VPN Prod account"
+
+  policy = data.aws_iam_policy_document.grant_infrastructure_prod_vpn_prod_administrator_role.json
+}
+
 data "aws_iam_policy_document" "grant_workloads_sdlc_engineering_dev_administrator_role" {
   statement {
     sid = "AllowAssumeOrganizationAccountAccessRole"
@@ -270,6 +291,27 @@ resource "aws_iam_policy" "grant_deployments_prod_engineering_deployments_prod_a
   description = "Grants access to the OrganizationAccountAccessRole in the Deployments/Prod/Engineering Deployments Prod account"
 
   policy = data.aws_iam_policy_document.grant_deployments_prod_engineering_deployments_prod_administrator_role.json
+}
+
+data "aws_iam_policy_document" "grant_sandbox_kacper_dworski_administrator_role" {
+  statement {
+    sid = "AllowAssumeOrganizationAccountAccessRole"
+    effect = "Allow"
+    actions = [
+      "sts:AssumeRole"
+    ]
+    resources = [
+      "arn:aws:iam::${aws_organizations_account.kacper_dworski.id}:role/OrganizationAccountAccessRole"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "grant_sandbox_kacper_dworski_administrator_role" {
+  name = "GrantAccessToSandboxKacperDworskiAdministratorRole"
+  path = "/"
+  description = "Grants access to the OrganizationAccountAccessRole in the Sandbox/Kacper Dworski account"
+
+  policy = data.aws_iam_policy_document.grant_sandbox_kacper_dworski_administrator_role.json
 }
 
 data "aws_iam_policy_document" "grant_self_service_auth_with_mfa" {

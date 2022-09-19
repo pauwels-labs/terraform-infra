@@ -52,6 +52,14 @@ resource "aws_organizations_organizational_unit" "sandbox" {
   parent_id = aws_organizations_organization.pauwelslabs.roots[0].id
 }
 
+# Kacper's blank account
+resource "aws_organizations_account" "kacper_dworski" {
+  name  = "Kacper Dworski"
+  email = "kacperd75@gmail.com"
+  parent_id = aws_organizations_organizational_unit.sandbox.id
+  iam_user_access_to_billing = "ALLOW"
+}
+
 # Shared global infrastructure, divided into software-development
 # lifecycle (SDLC) and production OUs
 resource "aws_organizations_organizational_unit" "infrastructure" {
@@ -103,6 +111,15 @@ resource "aws_organizations_account" "artifacts_prod" {
 resource "aws_organizations_account" "keys_prod" {
   name  = "Keys Prod"
   email = "alex+keys-prod@pauwelslabs.com"
+  parent_id = aws_organizations_organizational_unit.infrastructure_prod.id
+  iam_user_access_to_billing = "ALLOW"  
+}
+
+# Pauwels Labs' primary VPN account (all VPN resources should be here
+# and be peered into other VPCs)
+resource "aws_organizations_account" "vpn_prod" {
+  name  = "VPN Prod"
+  email = "alex+vpn-prod@pauwelslabs.com"
   parent_id = aws_organizations_organizational_unit.infrastructure_prod.id
   iam_user_access_to_billing = "ALLOW"  
 }

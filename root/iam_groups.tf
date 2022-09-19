@@ -1,3 +1,13 @@
+# Group for all users with access to Sandbox/Kacper Dworski/OrganizationAccountAccessRole
+resource "aws_iam_group" "sandbox_kacper_dworski_administrators" {
+  name = "SandboxKacperDworskiAdministrators"
+}
+
+resource "aws_iam_group_policy_attachment" "sandbox_kacper_dworski_administrator_role" {
+  group = aws_iam_group.sandbox_kacper_dworski_administrators.name
+  policy_arn = aws_iam_policy.grant_sandbox_kacper_dworski_administrator_role.arn
+}
+
 # Group for all users with access to Infrastructure/Prod/Artifacts Prod/OrganizationAccountAccessRole
 resource "aws_iam_group" "infrastructure_prod_artifacts_prod_administrators" {
   name = "InfrastructureProdArtifactsProdAdministrators"
@@ -56,6 +66,16 @@ resource "aws_iam_group" "infrastructure_prod_keys_prod_administrators" {
 resource "aws_iam_group_policy_attachment" "infrastructure_prod_keys_prod_administrator_role" {
   group = aws_iam_group.infrastructure_prod_keys_prod_administrators.name
   policy_arn = aws_iam_policy.grant_infrastructure_prod_keys_prod_administrator_role.arn
+}
+
+# Group for all users with access to Infrastructure/Prod/VPN Prod/OrganizationAccountAccessRole
+resource "aws_iam_group" "infrastructure_prod_vpn_prod_administrators" {
+  name = "InfrastructureProdVPNProdAdministrators"
+}
+
+resource "aws_iam_group_policy_attachment" "infrastructure_prod_vpn_prod_administrator_role" {
+  group = aws_iam_group.infrastructure_prod_vpn_prod_administrators.name
+  policy_arn = aws_iam_policy.grant_infrastructure_prod_vpn_prod_administrator_role.arn
 }
 
 # Group for all root account administrators
