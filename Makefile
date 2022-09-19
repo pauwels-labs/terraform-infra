@@ -1,5 +1,5 @@
 CODE := 000000
-USER := pauwels
+USER := ""
 
 all: get-token
 	@aws configure set aws_access_key_id $(shell cat session.json | jq -r .Credentials.AccessKeyId) --profile mfa
