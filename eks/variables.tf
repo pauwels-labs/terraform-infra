@@ -56,6 +56,12 @@ variable "cluster_instance_types" {
   ]
 }
 
+variable "use_ipv6" {
+  description = "Set to true to setup cluster networking using ipv6"
+  type        = bool
+  default     = true
+}
+
 variable "instance_disk_size" {
   description = "Size of the root disk attached to cluster instances"
   type        = number
@@ -117,4 +123,40 @@ variable "keys_account_assume_role_name" {
   description = "Name of the role to assume in the keys account"
   type        = string
   default     = "OrganizationAccountAccessRole"
+}
+
+variable "dns_account_id" {
+  description = "ID of the account to store DNS records in"
+  type        = string
+}
+
+variable "dns_account_assume_role_name" {
+  description = "Name of the role to assume in the DNS account"
+  type        = string
+  default     = "OrganizationAccountAccessRole"
+}
+
+// Flux installation settings
+variable "use_flux" {
+  description = "Set to true to manage CICD with Flux"
+  type        = bool
+  default     = true
+}
+
+variable "use_ecr" {
+  description = "Set to true to use IAM roles to authenticate to an AWS ECR image and Helm registry"
+  type        = bool
+  default     = false
+}
+
+variable "ecr_arn" {
+  description = "ARN of the ECR image and Helm registry to use; this can be cross-account and should be expressed in the form of a path, i.e. arn:aws:ecr:{region}:{account id}:repository/* to allow full access"
+  type        = string
+  default     = ""
+}
+
+variable "use_external_dns" {
+  description = "Set to true to deploy external-dns and automate DNS record management"
+  type        = bool
+  default     = true
 }

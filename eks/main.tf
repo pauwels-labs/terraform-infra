@@ -10,6 +10,17 @@ terraform {
     kms_key_id = "alias/terraform"
     workspace_key_prefix = "workspaces"
   }
+
+  required_providers {
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.14.0"
+    }
+    flux = {
+      source  = "fluxcd/flux"
+      version = ">= 0.15.0-dev"
+    }
+  }
 }
 
 provider "aws" {
@@ -29,3 +40,16 @@ provider "aws" {
     role_arn = local.keys_account_role_arn
   }  
 }
+
+provider "aws" {
+  alias = "dns"
+  region = var.cluster_region
+  profile = "mfa"  
+  assume_role {
+    role_arn = local.dns_account_role_arn
+  }  
+}
+
+provider "flux" {}
+
+provider "kubectl" {}
