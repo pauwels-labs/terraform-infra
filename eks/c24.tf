@@ -58,16 +58,7 @@ module "c24" {
   vpc_id     = aws_vpc.cluster.id
   subnet_ids = [for subnet in slice(aws_subnet.private, local.cluster_index[24] * local.az_count, local.cluster_index[24] * local.az_count + local.az_count): subnet.id]
 
-  node_security_group_additional_rules = {
-    allow_all_outbound_ssh = {
-      description      = "Egress all SSH to internet"
-      from_port        = 22
-      to_port          = 22
-      protocol         = "tcp"
-      type             = "egress"
-      ipv6_cidr_blocks = ["::/0"]
-    }
-
+  node_security_group_additional_rules = merge(local.nsgr_conditional_rules, {
     allow_istio_webhook = {
       description                   = "Cluster API to Istio webhook"
       from_port                     = 15017
@@ -76,7 +67,61 @@ module "c24" {
       type                          = "ingress"
       source_cluster_security_group = true
     }
-  }
+
+    allow_prometheus_adapter = {
+      description                   = "Cluster API to prometheus adapter for metrics"
+      from_port                     = 6443
+      to_port                       = 6443
+      protocol                      = "tcp"
+      type                          = "ingress"
+      source_cluster_security_group = true
+    }
+
+    allow_tekton_webhook = {
+      description                   = "Cluster API to Tekton webhook"
+      from_port                     = 8443
+      to_port                       = 8443
+      protocol                      = "tcp"
+      type                          = "ingress"
+      source_cluster_security_group = true
+    }
+
+    allow_all_ssh_outbound = {
+      description      = "Egress all SSH to internet"
+      from_port        = 22
+      to_port          = 22
+      protocol         = "tcp"
+      type             = "egress"
+      ipv6_cidr_blocks = ["::/0"]
+    }
+
+    allow_all_internal_inbound = {
+      description = "Allow all inter-node requests through"
+      from_port   = 1
+      to_port     = 65535
+      protocol    = "tcp"
+      type        = "ingress"
+      self        = true
+    }
+
+    allow_all_internal_outbound = {
+      description = "Allow all inter-node requests through"
+      from_port   = 1
+      to_port     = 65535
+      protocol    = "tcp"
+      type        = "egress"
+      self        = true
+    }
+
+    allow_aws_lb_controller_webhook = {
+      description                   = "Cluster API to AWS Load Balancer Controller webhook"
+      from_port                     = 9443
+      to_port                       = 9443
+      protocol                      = "tcp"
+      type                          = "ingress"
+      source_cluster_security_group = true
+    }
+  })
 
   manage_aws_auth_configmap = true
 
@@ -88,7 +133,7 @@ module "c24" {
   }
 
   eks_managed_node_groups = {
-    for subnet in slice(aws_subnet.private, local.cluster_index[24] * local.az_count, local.cluster_index[24] * local.az_count + local.az_count) : subnet.availability_zone => {
+    for i, subnet in slice(aws_subnet.private, local.cluster_index[24] * local.az_count, local.cluster_index[24] * local.az_count + local.az_count) : subnet.availability_zone => {
       name        = "${local.cluster_names[local.cluster_index[24]]}-${subnet.availability_zone}"
       description = "EKS node group in a private subnet for the ${local.cluster_names[local.cluster_index[24]]} cluster scoped to the ${subnet.availability_zone} AZ"
 
@@ -98,5 +143,71 @@ module "c24" {
       min_size = var.node_group_min_size
       max_size = var.node_group_max_size
     }
+
+    # A solution to the issue mentioned in the README
+    # zone0 = {
+    #   create = 0 < length(aws_subnet.private)
+
+    #   name        = try("${local.cluster_names[local.cluster_index[24]]}-${aws_subnet.private[0].availability_zone}", "")
+    #   description = try("EKS node group in a private subnet for the ${local.cluster_names[local.cluster_index[24]]} cluster scoped to the ${aws_subnet.private[0].availability_zone} AZ", "")
+
+    #   subnet_ids = try([aws_subnet.private[0].id], [])
+    #   disk_size  = var.instance_disk_size
+
+    #   min_size = var.node_group_min_size
+    #   max_size = var.node_group_max_size
+    # }
+
+    # zone1 = {
+    #   create = 1 < length(aws_subnet.private)
+
+    #   name        = try("${local.cluster_names[local.cluster_index[24]]}-${aws_subnet.private[1].availability_zone}", "")
+    #   description = try("EKS node group in a private subnet for the ${local.cluster_names[local.cluster_index[24]]} cluster scoped to the ${aws_subnet.private[1].availability_zone} AZ", "")
+
+    #   subnet_ids = try([aws_subnet.private[1].id], [])
+    #   disk_size  = var.instance_disk_size
+
+    #   min_size = var.node_group_min_size
+    #   max_size = var.node_group_max_size
+    # }
+
+    # zone2 = {
+    #   create = 2 < length(aws_subnet.private)
+
+    #   name        = try("${local.cluster_names[local.cluster_index[24]]}-${aws_subnet.private[2].availability_zone}", "")
+    #   description = try("EKS node group in a private subnet for the ${local.cluster_names[local.cluster_index[24]]} cluster scoped to the ${aws_subnet.private[2].availability_zone} AZ", "")
+
+    #   subnet_ids = try([aws_subnet.private[2].id], [])
+    #   disk_size  = var.instance_disk_size
+
+    #   min_size = var.node_group_min_size
+    #   max_size = var.node_group_max_size
+    # }
+
+    # zone3 = {
+    #   create = 3 < length(aws_subnet.private)
+
+    #   name        = try("${local.cluster_names[local.cluster_index[24]]}-${aws_subnet.private[3].availability_zone}", "")
+    #   description = try("EKS node group in a private subnet for the ${local.cluster_names[local.cluster_index[24]]} cluster scoped to the ${aws_subnet.private[3].availability_zone} AZ", "")
+
+    #   subnet_ids = try([aws_subnet.private[3].id], [])
+    #   disk_size  = var.instance_disk_size
+
+    #   min_size = var.node_group_min_size
+    #   max_size = var.node_group_max_size
+    # }
+
+    # zone4 = {
+    #   create = 4 < length(aws_subnet.private)
+
+    #   name        = try("${local.cluster_names[local.cluster_index[24]]}-${aws_subnet.private[4].availability_zone}", "")
+    #   description = try("EKS node group in a private subnet for the ${local.cluster_names[local.cluster_index[24]]} cluster scoped to the ${aws_subnet.private[4].availability_zone} AZ", "")
+
+    #   subnet_ids = try([aws_subnet.private[4].id], [])
+    #   disk_size  = var.instance_disk_size
+
+    #   min_size = var.node_group_min_size
+    #   max_size = var.node_group_max_size
+    # }
   }
 }

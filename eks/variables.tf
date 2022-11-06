@@ -136,6 +136,36 @@ variable "dns_account_assume_role_name" {
   default     = "OrganizationAccountAccessRole"
 }
 
+variable "databases_account_id" {
+  description = "ID of the account to establish peering with for databases access"
+  type        = string
+  default     = ""
+}
+
+variable "databases_account_assume_role_name" {
+  description = "Name of the role to assume in the databases account"
+  type        = string
+  default     = "OrganizationAccountAccessRole"
+}
+
+variable "databases_account_vpc_id" {
+  description = "ID of the VPC to establish peering with in the databases account"
+  type        = string
+  default     = ""
+}
+
+variable "databases_account_security_group_id" {
+  description = "ID of the security group attached to the database to use"
+  type        = string
+  default     = ""
+}
+
+variable "databases_account_route_table_id" {
+  description = "ID of the route table attached to the database to use"
+  type        = string
+  default     = ""
+}
+
 // Flux installation settings
 variable "use_flux" {
   description = "Set to true to manage CICD with Flux"
@@ -159,4 +189,16 @@ variable "use_external_dns" {
   description = "Set to true to deploy external-dns and automate DNS record management"
   type        = bool
   default     = true
+}
+
+variable "use_cert_manager" {
+  description = "Set to true to deploy cert-manager and automate TLS certificate management"
+  type        = bool
+  default     = true
+}
+
+variable "use_databases" {
+  description = "Set to true to connect a postgres database in a separate account to the cluster"
+  type        = bool
+  default     = false
 }

@@ -17,6 +17,7 @@ data "flux_sync" "this" {
   branch      = "main"
   target_path = "clusters/${local.cluster_names[count.index]}"
   url         = "ssh://git@github.com/${var.github_org_name}/${data.terraform_remote_state.repositories.outputs.flux_infra_repository_name}"
+  patch_names = keys(local.flux_kustomize_patches)
 }
 
 data "kubectl_file_documents" "sync_content" {
@@ -59,6 +60,16 @@ resource "github_repository_file" "flux_sync_kustomize_content" {
   content        = data.flux_sync.this[count.index].kustomize_content
   branch         = "main"
   commit_message = "feat: bootstraps flux kustomization into the cluster"
+}
+
+resource "github_repository_file" "flux_sync_kustomize_patches" {
+  count = local.cluster_count * length(keys(local.flux_kustomize_patches))
+
+  repository     = data.terraform_remote_state.repositories.outputs.flux_infra_repository_name
+  file           = data.flux_sync.this[floor(count.index / length(keys(local.flux_kustomize_patches)))].patch_file_paths[keys(local.flux_kustomize_patches)[count.index % length(keys(local.flux_kustomize_patches))]]
+  content        = values(local.flux_kustomize_patches)[count.index % length(keys(local.flux_kustomize_patches))]
+  branch         = "main"
+  commit_message = "feat: bootstraps patches to flux into the cluster"
 }
 
 resource "tls_private_key" "flux_infra_deploy_key" {

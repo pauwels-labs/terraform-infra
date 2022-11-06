@@ -1,3 +1,4 @@
+# AWS Load Balancer Controller
 data "aws_iam_policy_document" "aws_lb_controller" {
   statement {
     actions   = [
@@ -358,6 +359,7 @@ resource "aws_iam_role_policy_attachment" "aws_lb_controller" {
   policy_arn = aws_iam_policy.aws_lb_controller.arn
 }
 
+# Flux ECR
 data aws_iam_policy_document "pauwels_labs_ecr_policy" {
   statement {
     sid = "AllowRWAccessToPauwelsLabsECR"    
@@ -462,8 +464,10 @@ resource "aws_iam_role_policy_attachment" "grant_ecr_access_to_flux_ecr_role" {
   policy_arn = aws_iam_policy.pauwels_labs_ecr_policy[0].arn
 }
 
+# External DNS
 data "aws_iam_policy_document" "external_dns" {
   count = 1
+
   statement {
     effect = "Allow"
     actions = [
@@ -486,7 +490,7 @@ resource "aws_iam_policy" "external_dns" {
   count    = var.use_external_dns ? 1 : 0
 
   name        = "AllowK8sExternalDNS-${var.cluster_name}"
-  description = "Allows an external-dns service in a ${var.cluster_name} k8s cluster to manage DNS records"
+  description = "Allows an external-dns service in a ${var.cluster_name} k8s clusters to manage DNS records"
   policy      = data.aws_iam_policy_document.external_dns[count.index].json
 }
 
@@ -564,4 +568,459 @@ resource "aws_iam_openid_connect_provider" "dns_cluster_oidc_provider" {
   client_id_list  = [
     "sts.amazonaws.com"
   ]
+}
+
+# Certificate Manager
+data "aws_iam_policy_document" "cert_manager" {
+  count = 1
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "route53:GetChange",
+    ]
+    resources = ["arn:aws:route53:::change/*"]
+  }
+  statement {
+    effect = "Allow"
+    actions = [
+      "route53:ChangeResourceRecordSets",
+      "route53:ListResourceRecordSets"
+    ]
+    resources = ["arn:aws:route53:::hostedzone/*"]
+  }
+  statement {
+    effect = "Allow"
+    actions = [
+      "route53:ListHostedZonesByName",
+    ]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "cert_manager" {
+  provider = aws.dns
+  count    = var.use_cert_manager ? 1 : 0
+
+  name        = "AllowK8sCertManager-${var.cluster_name}"
+  description = "Allows a cert-manager service in a ${var.cluster_name} k8s clusters to manage DNS records for DNS01 verification"
+  policy      = data.aws_iam_policy_document.cert_manager[count.index].json
+}
+
+data "aws_iam_policy_document" "cert_manager_trust_policy" {
+  dynamic "statement" {
+    for_each = aws_iam_openid_connect_provider.dns_cluster_oidc_provider
+
+    content {
+      actions   = [
+        "sts:AssumeRoleWithWebIdentity"
+      ]
+      effect    = "Allow"
+
+      principals {
+        type = "Federated"
+        identifiers = [
+          statement.value.arn
+        ]
+      }
+
+      condition {
+        test     = "StringEquals"
+        variable = "${statement.value.url}:aud"
+        values   = [
+          "sts.amazonaws.com"
+        ]
+      }
+      condition {
+        test     = "StringEquals"
+        variable = "${statement.value.url}:sub"
+        values   = [
+          "system:serviceaccount:cert-manager:cert-manager"
+        ]
+      }
+    }
+  }
+}
+
+resource "aws_iam_role" "cert_manager" {
+  provider = aws.dns
+  count    = var.use_cert_manager ? 1 : 0
+
+  name = "${var.cluster_name}-cert-manager"
+
+  assume_role_policy = data.aws_iam_policy_document.cert_manager_trust_policy.json
+
+  tags = {
+    Name        = "${var.cluster_name}-cert-manager"
+    Description = "Role used to allow cert-manager services in the ${var.cluster_name} clusters to manage DNS records for DNS01 verification"
+    Cluster     = var.cluster_name
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "grant_dns_access_to_cert_manager_role" {
+  provider = aws.dns
+  count    = var.use_cert_manager ? 1 : 0
+
+  role       = aws_iam_role.cert_manager[0].name
+  policy_arn = aws_iam_policy.cert_manager[0].arn
+}
+
+# AWS EBS CSI controller
+data "aws_iam_policy" "ebs_csi_driver" {
+  provider = aws.cluster
+
+  name = "AmazonEBSCSIDriverPolicy"
+}
+
+data "aws_iam_policy_document" "ebs_csi_driver_kms" {
+  dynamic "statement" {
+    for_each = aws_kms_alias.ebs_volume_encryption
+
+    content {
+      effect = "Allow"
+      actions = [
+        "kms:CreateGrant",
+        "kms:ListGrants",
+        "kms:RevokeGrant"
+      ]
+      resources = ["*"]
+      condition {
+        test     = "Bool"
+        variable = "kms:GrantIsForAWSResource"
+        values   = [
+          "true"
+        ]
+      }
+      condition {
+        test     = "ForAnyValue:StringEquals"
+        variable = "kms:ResourceAliases"
+        values   = [
+          "${statement.value.name}"
+        ]
+      }
+      condition {
+        test     = "StringEquals"
+        variable = "${local.clusters[statement.key].oidc_provider}:aud"
+        values   = [
+          "sts.amazonaws.com"
+        ]
+      }
+      condition {
+        test     = "StringEquals"
+        variable = "${local.clusters[statement.key].oidc_provider}:sub"
+        values   = [
+          "system:serviceaccount:kube-system:ebs-csi-controller-sa"
+        ]
+      }
+    }
+  }
+  
+  dynamic "statement" {
+    for_each = aws_kms_alias.ebs_volume_encryption
+
+    content {
+      effect = "Allow"
+      actions = [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey"
+      ]
+      resources = ["*"]
+      condition {
+        test     = "ForAnyValue:StringEquals"
+        variable = "kms:ResourceAliases"
+        values   = [
+          "${statement.value.name}"
+        ]
+      }
+      condition {
+        test     = "StringEquals"
+        variable = "${local.clusters[statement.key].oidc_provider}:aud"
+        values   = [
+          "sts.amazonaws.com"
+        ]
+      }
+      condition {
+        test     = "StringEquals"
+        variable = "${local.clusters[statement.key].oidc_provider}:sub"
+        values   = [
+          "system:serviceaccount:kube-system:ebs-csi-controller-sa"
+        ]
+      }
+    }
+  }
+}
+
+resource "aws_iam_policy" "ebs_csi_driver_kms" {
+  provider = aws.cluster
+  
+  name        = "AllowEBSCSIDriverKMSAccess-${var.cluster_name}"
+  description = "Allows the EBS CSI driver in the ${var.cluster_name} k8s clusters to encrypt and decrypt EBS volumes with its specific KMS key"
+  policy      = data.aws_iam_policy_document.ebs_csi_driver_kms.json
+}
+
+data "aws_iam_policy_document" "ebs_csi_driver_trust_policy" {
+  dynamic "statement" {
+    for_each = local.clusters
+
+    content {
+      actions   = [
+        "sts:AssumeRoleWithWebIdentity"
+      ]
+      effect    = "Allow"
+
+      principals {
+        type = "Federated"
+        identifiers = [
+          statement.value.oidc_provider_arn
+        ]
+      }
+
+      condition {
+        test     = "StringEquals"
+        variable = "${statement.value.oidc_provider}:aud"
+        values   = [
+          "sts.amazonaws.com"
+        ]
+      }
+      condition {
+        test     = "StringEquals"
+        variable = "${statement.value.oidc_provider}:sub"
+        values   = [
+          "system:serviceaccount:kube-system:ebs-csi-controller-sa"
+        ]
+      }
+    }
+  }
+}
+
+resource "aws_iam_role" "ebs_csi_driver" {
+  provider = aws.cluster
+
+  name = "${var.cluster_name}-ebs-csi-driver"
+
+  assume_role_policy = data.aws_iam_policy_document.ebs_csi_driver_trust_policy.json
+
+  tags = {
+    Name        = "${var.cluster_name}-ebs-csi-driver"
+    Description = "Role used to allow aws-ebs-csi-driver services in the ${var.cluster_name} clusters to manage EBS volumes for persistent volumes in the cluster"
+    Cluster     = var.cluster_name
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "grant_ebs_access_to_ebs_csi_driver_role" {
+  provider = aws.cluster
+
+  role       = aws_iam_role.ebs_csi_driver.name
+  policy_arn = data.aws_iam_policy.ebs_csi_driver.arn
+}
+
+resource "aws_iam_role_policy_attachment" "grant_kms_access_to_ebs_csi_driver_role" {
+  provider = aws.cluster
+
+  role       = aws_iam_role.ebs_csi_driver.name
+  policy_arn = aws_iam_policy.ebs_csi_driver_kms.arn
+}
+
+# Vault role
+data "aws_iam_policy_document" "vault_auto_unseal" {
+  dynamic "statement" {
+    for_each = aws_kms_alias.vault_auto_unseal
+
+    content {
+      effect = "Allow"
+      actions = [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:DescribeKey"
+      ]
+      resources = ["*"]
+      condition {
+        test     = "ForAnyValue:StringEquals"
+        variable = "kms:ResourceAliases"
+        values   = [
+          "${statement.value.name}"
+        ]
+      }
+      condition {
+        test     = "StringEquals"
+        variable = "${local.clusters[statement.key].oidc_provider}:aud"
+        values   = [
+          "sts.amazonaws.com"
+        ]
+      }
+      condition {
+        test     = "StringEquals"
+        variable = "${local.clusters[statement.key].oidc_provider}:sub"
+        values   = [
+          "system:serviceaccount:vault:vault"
+        ]
+      }
+    }
+  }  
+}
+
+resource "aws_iam_policy" "vault_auto_unseal" {
+  provider = aws.cluster
+  
+  name        = "AllowVaultAutoUnsealAccess-${var.cluster_name}"
+  description = "Allows the vault instance in the ${var.cluster_name} k8s clusters to unseal itself automatically using a key in KMS"
+  policy      = data.aws_iam_policy_document.vault_auto_unseal.json
+}
+
+data "aws_iam_policy_document" "vault_trust_policy" {
+  dynamic "statement" {
+    for_each = local.clusters
+
+    content {
+      actions   = [
+        "sts:AssumeRoleWithWebIdentity"
+      ]
+      effect    = "Allow"
+
+      principals {
+        type = "Federated"
+        identifiers = [
+          statement.value.oidc_provider_arn
+        ]
+      }
+
+      condition {
+        test     = "StringEquals"
+        variable = "${statement.value.oidc_provider}:aud"
+        values   = [
+          "sts.amazonaws.com"
+        ]
+      }
+      condition {
+        test     = "StringEquals"
+        variable = "${statement.value.oidc_provider}:sub"
+        values   = [
+          "system:serviceaccount:vault:vault"
+        ]
+      }
+    }
+  }
+}
+
+resource "aws_iam_role" "vault" {
+  provider = aws.cluster
+
+  name = "${var.cluster_name}-vault"
+
+  assume_role_policy = data.aws_iam_policy_document.vault_trust_policy.json
+
+  tags = {
+    Name        = "${var.cluster_name}-vault"
+    Description = "Role used to allow Vault in the ${var.cluster_name} clusters to automatically unseal itself using a key in JMS"
+    Cluster     = var.cluster_name
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "grant_auto_unseal_access_to_vault_role" {
+  provider = aws.cluster
+
+  role       = aws_iam_role.vault.name
+  policy_arn = aws_iam_policy.vault_auto_unseal.arn
+}
+
+# Cluster autoscaler role
+data "aws_iam_policy_document" "cluster_autoscaler" {
+  statement {
+    effect    = "Allow"
+    actions   = [
+      "autoscaling:DescribeAutoScalingInstances",
+      "autoscaling:DescribeAutoScalingGroups",
+      "ec2:DescribeLaunchTemplateVersions",
+      "autoscaling:DescribeTags",
+      "autoscaling:DescribeLaunchConfigurations"
+    ]
+    resources = ["*"]
+  }
+
+  dynamic "statement" {
+    for_each = local.clusters
+
+    content {
+      effect    = "Allow"
+      actions   = [
+        "autoscaling:SetDesiredCapacity",
+        "autoscaling:TerminateInstanceInAutoScalingGroup"
+      ]
+      resources = ["*"]
+      condition {
+        test     = "StringEquals"
+        variable = "aws:ResourceTag/k8s.io/cluster-autoscaler/${statement.value.cluster_id}"
+        values   = [
+          "owned"
+        ]
+      }
+    }
+  }  
+}
+
+resource "aws_iam_policy" "cluster_autoscaler" {
+  provider = aws.cluster
+  
+  name        = "AllowClusterAutoscaling-${var.cluster_name}"
+  description = "Allows the cluster autoscaler instance in the ${var.cluster_name} k8s clusters to manage auto scaling groups"
+  policy      = data.aws_iam_policy_document.cluster_autoscaler.json
+}
+
+data "aws_iam_policy_document" "cluster_autoscaler_trust_policy" {
+  dynamic "statement" {
+    for_each = local.clusters
+
+    content {
+      actions   = [
+        "sts:AssumeRoleWithWebIdentity"
+      ]
+      effect    = "Allow"
+
+      principals {
+        type = "Federated"
+        identifiers = [
+          statement.value.oidc_provider_arn
+        ]
+      }
+
+      condition {
+        test     = "StringEquals"
+        variable = "${statement.value.oidc_provider}:aud"
+        values   = [
+          "sts.amazonaws.com"
+        ]
+      }
+      condition {
+        test     = "StringEquals"
+        variable = "${statement.value.oidc_provider}:sub"
+        values   = [
+          "system:serviceaccount:kube-system:cluster-autoscaler"
+        ]
+      }
+    }
+  }
+}
+
+resource "aws_iam_role" "cluster_autoscaler" {
+  provider = aws.cluster
+
+  name = "${var.cluster_name}-cluster-autoscaler"
+
+  assume_role_policy = data.aws_iam_policy_document.cluster_autoscaler_trust_policy.json
+
+  tags = {
+    Name        = "${var.cluster_name}-cluster-autoscaler"
+    Description = "Role used to allow cluster autoscaler in the ${var.cluster_name} clusters to manage auto-scaling groups"
+    Cluster     = var.cluster_name
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "grant_autoscaling_access_to_cluster_autoscaler_role" {
+  provider = aws.cluster
+
+  role       = aws_iam_role.cluster_autoscaler.name
+  policy_arn = aws_iam_policy.cluster_autoscaler.arn
 }

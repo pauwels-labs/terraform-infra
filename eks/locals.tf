@@ -5,9 +5,11 @@ resource "random_id" "suffix" {
 }
 
 locals {
-  dns_account_role_arn    = "arn:aws:iam::${var.dns_account_id}:role/${var.dns_account_assume_role_name}"
-  keys_account_role_arn    = "arn:aws:iam::${var.keys_account_id}:role/${var.keys_account_assume_role_name}"
-  cluster_account_role_arn = "arn:aws:iam::${var.cluster_account_id}:role/${var.cluster_account_assume_role_name}"
+  databases_account_role_arn = "arn:aws:iam::${var.databases_account_id}:role/${var.databases_account_assume_role_name}"
+  dns_account_role_arn       = "arn:aws:iam::${var.dns_account_id}:role/${var.dns_account_assume_role_name}"
+  keys_account_role_arn      = "arn:aws:iam::${var.keys_account_id}:role/${var.keys_account_assume_role_name}"
+  cluster_account_role_arn   = "arn:aws:iam::${var.cluster_account_id}:role/${var.cluster_account_assume_role_name}"
+
   az_count                 = min(length(data.aws_availability_zones.available.names), var.az_count)
   subnet_count             = var.cluster_count * local.az_count
   nat_gateway_count        = var.ha_nat_gateways ? local.az_count : 1
@@ -19,30 +21,43 @@ locals {
   cluster_names                  = [for i in local.cluster_index : "${var.cluster_name}-${i}"]
 
   clusters = slice([
-    local.cluster_create[0] ? module.c0[0] : null,
-    local.cluster_create[1] ? module.c1[0] : null,
-    local.cluster_create[2] ? module.c2[0] : null,
-    local.cluster_create[3] ? module.c3[0] : null,
-    local.cluster_create[4] ? module.c4[0] : null,
-    local.cluster_create[5] ? module.c5[0] : null,
-    local.cluster_create[6] ? module.c6[0] : null,
-    local.cluster_create[7] ? module.c7[0] : null,
-    local.cluster_create[8] ? module.c8[0] : null,
-    local.cluster_create[9] ? module.c9[0] : null,
-    local.cluster_create[10] ? module.c10[0] : null,
-    local.cluster_create[11] ? module.c11[0] : null,
-    local.cluster_create[12] ? module.c12[0] : null,
-    local.cluster_create[13] ? module.c13[0] : null,
-    local.cluster_create[14] ? module.c14[0] : null,
-    local.cluster_create[15] ? module.c15[0] : null,
-    local.cluster_create[16] ? module.c16[0] : null,
-    local.cluster_create[17] ? module.c17[0] : null,
-    local.cluster_create[18] ? module.c18[0] : null,
-    local.cluster_create[19] ? module.c19[0] : null,
-    local.cluster_create[20] ? module.c20[0] : null,
-    local.cluster_create[21] ? module.c21[0] : null,
-    local.cluster_create[22] ? module.c22[0] : null,
-    local.cluster_create[23] ? module.c23[0] : null,
-    local.cluster_create[24] ? module.c24[0] : null
+    try(module.c0[0], null),
+    try(module.c1[0], null),
+    try(module.c2[0], null),
+    try(module.c3[0], null),
+    try(module.c4[0], null),
+    try(module.c5[0], null),
+    try(module.c6[0], null),
+    try(module.c7[0], null),
+    try(module.c8[0], null),
+    try(module.c9[0], null),
+    try(module.c10[0], null),
+    try(module.c11[0], null),
+    try(module.c12[0], null),
+    try(module.c13[0], null),
+    try(module.c14[0], null),
+    try(module.c15[0], null),
+    try(module.c16[0], null),
+    try(module.c17[0], null),
+    try(module.c18[0], null),
+    try(module.c19[0], null),
+    try(module.c20[0], null),
+    try(module.c21[0], null),
+    try(module.c22[0], null),
+    try(module.c23[0], null),
+    try(module.c24[0], null)
   ], 0, var.cluster_count)
+
+  # Node security group rules
+  nsgr_allow_postgres_databases_outbound = var.use_databases ? {
+    allow_postgres_databases_outbound = {
+      description      = "Egress all PostgreSQL traffic to the databases account"
+      from_port        = 5432
+      to_port          = 5432
+      protocol         = "tcp"
+      type             = "egress"
+      ipv6_cidr_blocks = [data.aws_vpc.databases[0].ipv6_cidr_block]
+    }
+  }: {}
+  nsgr_conditional_rules = merge(local.nsgr_allow_postgres_databases_outbound)
 }

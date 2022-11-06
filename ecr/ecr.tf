@@ -326,3 +326,283 @@ resource "aws_ecr_repository" "external_dns_helm" {
     scan_on_push = false
   }
 }
+
+resource "aws_ecr_repository" "vault_k8s" {
+  name                 = "hashicorp/vault-k8s"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "vault" {
+  name                 = "hashicorp/vault"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "vault_csi_provider" {
+  name                 = "hashicorp/vault-csi-provider"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "vault_helm" {
+  name                 = "helm/hashicorp/vault"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "ebs_csi_driver" {
+  name                 = "amazon/aws-ebs-csi-driver"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "csi_provisioner" {
+  name                 = "sig-storage/csi-provisioner"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "csi_attacher" {
+  name                 = "sig-storage/csi-attacher"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "csi_snapshotter" {
+  name                 = "sig-storage/csi-snapshotter"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "csi_livenessprobe" {
+  name                 = "sig-storage/livenessprobe"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "csi_resizer" {
+  name                 = "sig-storage/csi-resizer"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "csi_node_driver_registrar" {
+  name                 = "sig-storage/csi-node-driver-registrar"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "ebs_csi_driver_helm" {
+  name                 = "helm/amazon/aws-ebs-csi-driver"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "weave_gitops" {
+  name                 = "weaveworks/wego-app"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "weave_gitops_helm" {
+  name                 = "helm/weaveworks/weave-gitops"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "keycloak" {
+  name                 = "keycloak/keycloak"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "keycloak_operator" {
+  name                 = "keycloak/keycloak-operator"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "keycloak_operator_helm" {
+  name                 = "helm/keycloak/keycloak-operator"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "oauth2_proxy" {
+  name                 = "oauth2-proxy/oauth2-proxy"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "oauth2_proxy_helm" {
+  name                 = "helm/oauth2-proxy/oauth2-proxy"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "secrets_store_csi_driver" {
+  name                 = "kubernetes-sigs/secrets-store-csi-driver"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "external_secrets" {
+  name                 = "external-secrets/external-secrets"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "external_secrets_helm" {
+  name                 = "helm/external-secrets/external-secrets"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "alertmanager" {
+  name                 = "prometheus/alertmanager"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "blackbox_exporter" {
+  name                 = "prometheus/blackbox-exporter"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "grafana" {
+  name                 = "grafana/grafana"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "kube_state_metrics" {
+  name                 = "kube-state-metrics/kube-state-metrics"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "node_exporter" {
+  name                 = "prometheus/node-exporter"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "prometheus" {
+  name                 = "prometheus/prometheus"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "prometheus_adapter" {
+  name                 = "prometheus-adapter/prometheus-adapter"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "prometheus_operator" {
+  name                 = "prometheus-operator/prometheus-operator"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "prometheus_config_reloader" {
+  name                 = "prometheus-operator/prometheus-config-reloader"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "kube_rbac_proxy" {
+  name                 = "brancz/kube-rbac-proxy"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "configmap_reload" {
+  name                 = "jimmidyson/configmap-reload"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "tektoncd_controller" {
+  name                 = "tektoncd/controller"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "tektoncd_webhook" {
+  name                 = "tektoncd/webhook"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}

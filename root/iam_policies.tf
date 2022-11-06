@@ -9,7 +9,7 @@ data "aws_iam_policy_document" "root_administrator_assume_role_policy" {
     principals {
       type = "AWS"
       identifiers = [
-	"arn:aws:iam::404672225309:root"
+        "arn:aws:iam::404672225309:root"
       ]	
     }
     actions = [
@@ -80,12 +80,20 @@ data "aws_iam_policy_document" "terraform_backend_assume_role_policy" {
 data "aws_iam_policy_document" "grant_root_administrator_role" {
   statement {
     sid = "AllowAssumeRootAdministratorRole"
-    effect = "Allow"    
+    effect = "Allow"
     actions = [
       "sts:AssumeRole"
     ]
     resources = [
-      "arn:aws:iam::404672225309:role/RootAdministrator"
+      "arn:aws:iam::404672225309:role/RootAdministrator",
+      "arn:aws:iam::${aws_organizations_account.artifacts_prod.id}:role/OrganizationAccountAccessRole",
+      "arn:aws:iam::${aws_organizations_account.dns_prod.id}:role/OrganizationAccountAccessRole",
+      "arn:aws:iam::${aws_organizations_account.keys_prod.id}:role/OrganizationAccountAccessRole",
+      "arn:aws:iam::${aws_organizations_account.vpn_prod.id}:role/OrganizationAccountAccessRole",
+      "arn:aws:iam::${aws_organizations_account.databases_prod.id}:role/OrganizationAccountAccessRole",
+      "arn:aws:iam::${aws_organizations_account.engineering_dev.id}:role/OrganizationAccountAccessRole",
+      "arn:aws:iam::${aws_organizations_account.engineering_deployments_prod.id}:role/OrganizationAccountAccessRole",
+      "arn:aws:iam::${aws_organizations_account.kacper_dworski.id}:role/OrganizationAccountAccessRole"
     ]
   }
 }
@@ -249,6 +257,27 @@ resource "aws_iam_policy" "grant_infrastructure_prod_vpn_prod_administrator_role
   description = "Grants access to the OrganizationAccountAccessRole in the Infrastructure/Prod/VPN Prod account"
 
   policy = data.aws_iam_policy_document.grant_infrastructure_prod_vpn_prod_administrator_role.json
+}
+
+data "aws_iam_policy_document" "grant_infrastructure_prod_databases_prod_administrator_role" {
+  statement {
+    sid = "AllowAssumeOrganizationAccountAccessRole"
+    effect = "Allow"    
+    actions = [
+      "sts:AssumeRole"
+    ]
+    resources = [
+      "arn:aws:iam::${aws_organizations_account.databases_prod.id}:role/OrganizationAccountAccessRole"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "grant_infrastructure_prod_databases_prod_administrator_role" {
+  name = "GrantAccessToInfrastructureProdDatabasesProdAdministratorRole"
+  path = "/"
+  description = "Grants access to the OrganizationAccountAccessRole in the Infrastructure/Prod/Databases Prod account"
+
+  policy = data.aws_iam_policy_document.grant_infrastructure_prod_databases_prod_administrator_role.json
 }
 
 data "aws_iam_policy_document" "grant_workloads_sdlc_engineering_dev_administrator_role" {

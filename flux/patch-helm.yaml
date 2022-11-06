@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helm-controller
+  namespace: flux-system
+spec:
+  template:
+    spec:
+      containers:
+      - args:
+        - --default-service-account=default
+        - --no-cross-namespace-refs=true
+        - --events-addr=http://notification-controller.flux-system.svc.cluster.local./
+        - --watch-all-namespaces=true
+        - --log-level=info
+        - --log-encoding=json
+        - --enable-leader-election
+        name: manager
+        image: 274295908850.dkr.ecr.eu-west-1.amazonaws.com/fluxcd/helm-controller:v0.24.0

@@ -197,3 +197,178 @@ resource "aws_ecr_repository_policy" "external_dns_helm" {
   repository = aws_ecr_repository.external_dns_helm.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
+
+resource "aws_ecr_repository_policy" "vault_k8s" {
+  repository = aws_ecr_repository.vault_k8s.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "vault" {
+  repository = aws_ecr_repository.vault.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "vault_csi_provider" {
+  repository = aws_ecr_repository.vault_csi_provider.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "vault_helm" {
+  repository = aws_ecr_repository.vault_helm.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "ebs_csi_driver" {
+  repository = aws_ecr_repository.ebs_csi_driver.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "csi_provisioner" {
+  repository = aws_ecr_repository.csi_provisioner.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "csi_attacher" {
+  repository = aws_ecr_repository.csi_attacher.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "csi_snapshotter" {
+  repository = aws_ecr_repository.csi_snapshotter.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "csi_livenessprobe" {
+  repository = aws_ecr_repository.csi_livenessprobe.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "csi_resizer" {
+  repository = aws_ecr_repository.csi_resizer.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "csi_node_driver_registrar" {
+  repository = aws_ecr_repository.csi_node_driver_registrar.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "ebs_csi_driver_helm" {
+  repository = aws_ecr_repository.ebs_csi_driver_helm.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "weave_gitops" {
+  repository = aws_ecr_repository.weave_gitops.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "weave_gitops_helm" {
+  repository = aws_ecr_repository.weave_gitops_helm.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "keycloak" {
+  repository = aws_ecr_repository.keycloak.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "keycloak_operator" {
+  repository = aws_ecr_repository.keycloak_operator.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "keycloak_operator_helm" {
+  repository = aws_ecr_repository.keycloak_operator_helm.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "oauth2_proxy" {
+  repository = aws_ecr_repository.oauth2_proxy.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "oauth2_proxy_helm" {
+  repository = aws_ecr_repository.oauth2_proxy_helm.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "secrets_store_csi_driver" {
+  repository = aws_ecr_repository.secrets_store_csi_driver.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "external_secrets" {
+  repository = aws_ecr_repository.external_secrets.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "external_secrets_helm" {
+  repository = aws_ecr_repository.external_secrets_helm.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "alertmanager" {
+  repository = aws_ecr_repository.alertmanager.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "blackbox_exporter" {
+  repository = aws_ecr_repository.blackbox_exporter.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "grafana" {
+  repository = aws_ecr_repository.grafana.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "kube_state_metrics" {
+  repository = aws_ecr_repository.kube_state_metrics.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "node_exporter" {
+  repository = aws_ecr_repository.node_exporter.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "prometheus" {
+  repository = aws_ecr_repository.prometheus.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "prometheus_adapter" {
+  repository = aws_ecr_repository.prometheus_adapter.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "prometheus_operator" {
+  repository = aws_ecr_repository.prometheus_operator.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "prometheus_config_reloader" {
+  repository = aws_ecr_repository.prometheus_config_reloader.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "kube_rbac_proxy" {
+  repository = aws_ecr_repository.kube_rbac_proxy.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "configmap_reload" {
+  repository = aws_ecr_repository.configmap_reload.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "tektoncd_controller" {
+  repository = aws_ecr_repository.tektoncd_controller.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "tektoncd_webhook" {
+  repository = aws_ecr_repository.tektoncd_webhook.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}

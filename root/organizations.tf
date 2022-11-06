@@ -124,6 +124,15 @@ resource "aws_organizations_account" "vpn_prod" {
   iam_user_access_to_billing = "ALLOW"  
 }
 
+# Pauwels Labs' primary databases account, where all AWS-managed databases
+# should live
+resource "aws_organizations_account" "databases_prod" {
+  name  = "Databases Prod"
+  email = "alex+databases-prod@pauwelslabs.com"
+  parent_id = aws_organizations_organizational_unit.infrastructure_prod.id
+  iam_user_access_to_billing = "ALLOW"  
+}
+
 # Service workloads, divided into software-development lifecycle (SDLC)
 # and production OUs
 resource "aws_organizations_organizational_unit" "workloads" {
@@ -158,19 +167,20 @@ resource "aws_organizations_organizational_unit" "deployments" {
   parent_id = aws_organizations_organization.pauwelslabs.roots[0].id
 }
 
-# Production service workloads
+# Hosts all deployment services for prod account
 resource "aws_organizations_organizational_unit" "deployments_prod" {
   name      = "Prod"
   parent_id = aws_organizations_organizational_unit.deployments.id
 }
 
-# All non-production service deployments
+# Account for testing changes to deployment services before sending
+# them to prod
 resource "aws_organizations_organizational_unit" "deployments_sdlc" {
   name      = "SDLC"
   parent_id = aws_organizations_organizational_unit.deployments.id
 }
 
-# All non-prod workloads for engineering
+# Manages production engineering account deployments
 resource "aws_organizations_account" "engineering_deployments_prod" {
   name  = "Engineering Deployments Prod"
   email = "alex+engineering-deployments-prod@pauwelslabs.com"

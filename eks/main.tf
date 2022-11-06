@@ -50,6 +50,15 @@ provider "aws" {
   }  
 }
 
+provider "aws" {
+  alias = "databases"
+  region = var.cluster_region
+  profile = "mfa"  
+  assume_role {
+    role_arn = local.databases_account_role_arn
+  }  
+}
+
 provider "flux" {}
 
 provider "kubectl" {}
