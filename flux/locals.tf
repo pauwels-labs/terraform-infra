@@ -20,5 +20,6 @@ locals {
     notification  = file("./patch-notification.yaml")
     source        = file("./patch-source.yaml")
     namespace     = file("./patch-namespace.yaml")
+    gitrepository = file("./patch-gitrepository.yaml")
   }
 }

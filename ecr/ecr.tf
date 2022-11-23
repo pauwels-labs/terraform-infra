@@ -606,3 +606,11 @@ resource "aws_ecr_repository" "tektoncd_webhook" {
     scan_on_push = false
   }
 }
+
+resource "aws_ecr_repository" "amazon_aws_cli_with_jq" {
+  name                 = "amazon/aws-cli-with-jq"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}

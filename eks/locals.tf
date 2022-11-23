@@ -5,6 +5,7 @@ resource "random_id" "suffix" {
 }
 
 locals {
+  ecr_account_role_arn = "arn:aws:iam::${var.ecr_account_id}:role/${var.ecr_account_assume_role_name}"
   databases_account_role_arn = "arn:aws:iam::${var.databases_account_id}:role/${var.databases_account_assume_role_name}"
   dns_account_role_arn       = "arn:aws:iam::${var.dns_account_id}:role/${var.dns_account_assume_role_name}"
   keys_account_role_arn      = "arn:aws:iam::${var.keys_account_id}:role/${var.keys_account_assume_role_name}"

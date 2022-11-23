@@ -237,7 +237,8 @@ data "aws_iam_policy_document" "vault_auto_unseal_key_policy" {
       test     = "StringEquals"
       variable = "${local.clusters[count.index].oidc_provider}:sub"
       values   = [
-        "system:serviceaccount:vault:vault"
+        "system:serviceaccount:i-vault:vault",
+        "system:serviceaccount:i-vault:vault2"
       ]
     }
   }

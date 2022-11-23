@@ -398,15 +398,7 @@ resource "aws_iam_policy" "pauwels_labs_ecr_policy" {
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
 
-resource "aws_iam_role_policy_attachment" "grant_ecr_access_to_node_iam_roles" {
-  provider = aws.cluster
-  count    = var.use_ecr ? local.subnet_count : 0
-
-  role       = values(local.clusters[floor(count.index / local.az_count)].eks_managed_node_groups)[count.index % local.az_count].iam_role_name
-  policy_arn = aws_iam_policy.pauwels_labs_ecr_policy[0].arn
-}
-
-data "aws_iam_policy_document" "flux_ecr_trust_policy" {
+data "aws_iam_policy_document" "infra_ecr_trust_policy" {
   dynamic "statement" {
     for_each = local.clusters
 
@@ -431,9 +423,10 @@ data "aws_iam_policy_document" "flux_ecr_trust_policy" {
         ]
       }
       condition {
-        test     = "StringEquals"
+        test     = "StringLike"
         variable = "${statement.value.oidc_provider}:sub"
         values   = [
+          "system:serviceaccount:i-*:ecr-credentials-sync",
           "system:serviceaccount:flux-system:ecr-credentials-sync"
         ]
       }
@@ -441,26 +434,26 @@ data "aws_iam_policy_document" "flux_ecr_trust_policy" {
   }
 }
 
-resource "aws_iam_role" "flux_ecr" {
+resource "aws_iam_role" "infra_ecr" {
   provider = aws.cluster
   count    = var.use_ecr ? 1 : 0
 
-  name = "${var.cluster_name}-flux-ecr"
+  name = "${var.cluster_name}-infra-ecr"
 
-  assume_role_policy = data.aws_iam_policy_document.flux_ecr_trust_policy.json
+  assume_role_policy = data.aws_iam_policy_document.infra_ecr_trust_policy.json
 
   tags = {
-    Name        = "${var.cluster_name}-flux-ecr"
-    Description = "Role that is used to provide Flux in the ${var.cluster_name} clusters an authenticated token for communication with images and Helm charts in an ECR registry"
+    Name        = "${var.cluster_name}-infra-ecr"
+    Description = "Role that is used to provide infrastructure workloads in the ${var.cluster_name} clusters an authenticated token for communication with images and Helm charts in an ECR registry"
     Cluster     = var.cluster_name
   }
 }
 
-resource "aws_iam_role_policy_attachment" "grant_ecr_access_to_flux_ecr_role" {
+resource "aws_iam_role_policy_attachment" "grant_ecr_access_to_infra_ecr_role" {
   provider = aws.cluster
   count    = var.use_ecr ? 1 : 0
 
-  role       = aws_iam_role.flux_ecr[0].name
+  role       = aws_iam_role.infra_ecr[0].name
   policy_arn = aws_iam_policy.pauwels_labs_ecr_policy[0].arn
 }
 
@@ -522,7 +515,7 @@ data "aws_iam_policy_document" "external_dns_trust_policy" {
         test     = "StringEquals"
         variable = "${statement.value.url}:sub"
         values   = [
-          "system:serviceaccount:external-dns:external-dns"
+          "system:serviceaccount:i-external-dns:external-dns"
         ]
       }
     }
@@ -635,7 +628,7 @@ data "aws_iam_policy_document" "cert_manager_trust_policy" {
         test     = "StringEquals"
         variable = "${statement.value.url}:sub"
         values   = [
-          "system:serviceaccount:cert-manager:cert-manager"
+          "system:serviceaccount:i-cert-manager:cert-manager"
         ]
       }
     }
@@ -855,7 +848,8 @@ data "aws_iam_policy_document" "vault_auto_unseal" {
         test     = "StringEquals"
         variable = "${local.clusters[statement.key].oidc_provider}:sub"
         values   = [
-          "system:serviceaccount:vault:vault"
+          "system:serviceaccount:i-vault:vault",
+          "system:serviceaccount:i-vault:vault2"
         ]
       }
     }
@@ -898,7 +892,8 @@ data "aws_iam_policy_document" "vault_trust_policy" {
         test     = "StringEquals"
         variable = "${statement.value.oidc_provider}:sub"
         values   = [
-          "system:serviceaccount:vault:vault"
+          "system:serviceaccount:i-vault:vault",
+          "system:serviceaccount:i-vault:vault2"
         ]
       }
     }

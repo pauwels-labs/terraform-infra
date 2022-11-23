@@ -372,3 +372,8 @@ resource "aws_ecr_repository_policy" "tektoncd_webhook" {
   repository = aws_ecr_repository.tektoncd_webhook.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
+
+resource "aws_ecr_repository_policy" "amazon_aws_cli_with_jq" {
+  repository = aws_ecr_repository.amazon_aws_cli_with_jq.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}

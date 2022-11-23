@@ -31,6 +31,17 @@ module "c11" {
   create_cni_ipv6_iam_policy = var.use_ipv6
   cluster_service_ipv4_cidr  = var.use_ipv6 ? null : var.cluster_service_cidr
 
+  cluster_identity_providers = {
+    lefranc-0 = {
+      client_id       = "kubernetes"
+      issuer_url      = "https://identity.pauwelslabs.com/realms/pauwels-labs-main"
+      username_claim  = "user_id"
+      username_prefix = "oidc:"
+      groups_claim    = "groups"
+      groups_prefix   = "oidc:"
+    }
+  }
+
   cluster_addons = {
     coredns = {
       resolve_conflicts = "OVERWRITE"
@@ -78,7 +89,7 @@ module "c11" {
     }
 
     allow_tekton_webhook = {
-      description                   = "Cluster API to Tekton webhook"
+      description                   = "Cluster API to Tekton webhook and Gatekeeper webhook"
       from_port                     = 8443
       to_port                       = 8443
       protocol                      = "tcp"
@@ -93,6 +104,24 @@ module "c11" {
       protocol         = "tcp"
       type             = "egress"
       ipv6_cidr_blocks = ["::/0"]
+    }
+
+    allow_all_aws_route53_tcp_outbound = {
+      description      = "Egress all TCP traffic to AWS public DNS servers"
+      from_port        = 53
+      to_port          = 53
+      protocol         = "tcp"
+      type             = "egress"
+      ipv6_cidr_blocks = ["2600:9000:5300::/45"]
+    }
+
+    allow_all_aws_route53_udp_outbound = {
+      description      = "Egress all UDP traffic to AWS public DNS servers"
+      from_port        = 53
+      to_port          = 53
+      protocol         = "udp"
+      type             = "egress"
+      ipv6_cidr_blocks = ["2600:9000:5300::/45"]
     }
 
     allow_all_internal_inbound = {

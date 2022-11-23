@@ -36,7 +36,7 @@ provider "flux" {}
 provider "kubectl" {}
 
 provider "github" {
-  token = "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"
+  token = ""
   owner = var.github_org_name
 }
 

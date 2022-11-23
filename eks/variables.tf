@@ -166,6 +166,18 @@ variable "databases_account_route_table_id" {
   default     = ""
 }
 
+variable "ecr_account_id" {
+  description = "ID of the account containing the cluster ECR registry"
+  type        = string
+  default     = ""
+}
+
+variable "ecr_account_assume_role_name" {
+  description = "Name of the role to assume in the ECR account"
+  type        = string
+  default     = "OrganizationAccountAccessRole"
+}
+
 // Flux installation settings
 variable "use_flux" {
   description = "Set to true to manage CICD with Flux"

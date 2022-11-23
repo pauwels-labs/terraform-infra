@@ -59,6 +59,15 @@ provider "aws" {
   }  
 }
 
+provider "aws" {
+  alias = "ecr"
+  region = var.cluster_region
+  profile = "mfa"  
+  assume_role {
+    role_arn = local.ecr_account_role_arn
+  }  
+}
+
 provider "flux" {}
 
 provider "kubectl" {}

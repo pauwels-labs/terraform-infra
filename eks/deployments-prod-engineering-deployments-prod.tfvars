@@ -24,6 +24,9 @@ databases_account_vpc_id            = "vpc-03034899ab886850d"
 databases_account_security_group_id = "sg-0c87d33a0ef5755ea"
 databases_account_route_table_id    = "rtb-0000d89ed6837d327"
 
+ecr_account_id               = "274295908850"
+ecr_account_assume_role_name = "OrganizationAccountAccessRole"
+
 use_flux         = true
 use_ecr          = true
 ecr_arn          = "arn:aws:ecr:eu-west-1:274295908850:repository/*"
