@@ -47,6 +47,17 @@ data aws_iam_policy_document "allow_tenant_ro_access_to_ecr_namespace" {
     }
   }
   statement {
+    sid = "AllowTenantROAccessToInfraNamespace"
+    actions = [
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:BatchGetImage",
+      "ecr:BatchCheckLayerAvailability",
+    ]
+    resources = [
+      "${local.ecr_arn}/i/*"
+    ]
+  }
+  statement {
     sid = "AllowAuthTokenGeneration"    
     actions = [
       "ecr:GetAuthorizationToken"
@@ -100,6 +111,17 @@ data aws_iam_policy_document "allow_tenant_rw_access_to_ecr_namespace" {
         "?*"
       ]
     }
+  }
+  statement {
+    sid = "AllowTenantROAccessToInfraNamespace"
+    actions = [
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:BatchGetImage",
+      "ecr:BatchCheckLayerAvailability",
+    ]
+    resources = [
+      "${local.ecr_arn}/i/*"
+    ]
   }
   statement {
     sid = "AllowAuthTokenGeneration"    

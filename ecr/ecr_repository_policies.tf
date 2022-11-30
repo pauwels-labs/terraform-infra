@@ -377,3 +377,18 @@ resource "aws_ecr_repository_policy" "amazon_aws_cli_with_jq" {
   repository = aws_ecr_repository.amazon_aws_cli_with_jq.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
+
+resource "aws_ecr_repository_policy" "semantic_release" {
+  repository = aws_ecr_repository.semantic_release.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "change" {
+  repository = aws_ecr_repository.change.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "node" {
+  repository = aws_ecr_repository.node.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}

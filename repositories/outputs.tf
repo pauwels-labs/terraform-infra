@@ -1,33 +1,44 @@
-output "flux_infra_repository_name" {
-  value = github_repository.flux_infra.name
+output "repository_names" {
+  value = var.repository_names
 }
 
-output "team_main_repository_name" {
-  value = github_repository.team_main.name
+output "deploy_public_key_openssh" {
+  value = [for k in tls_private_key.this : k.public_key_openssh]
 }
 
-output "team_main_deploy_ssh_public_key_openssh" {
-  value = tls_private_key.team_main_deploy_key.public_key_openssh
+output "deploy_public_key_pem" {
+  value = [for k in tls_private_key.this : k.public_key_pem]
 }
 
-output "team_main_deploy_ssh_public_key_pem" {
-  value = tls_private_key.team_main_deploy_key.public_key_pem
+output "deploy_public_key_fingerprint_md5" {
+  value = [for k in tls_private_key.this : k.public_key_fingerprint_md5]
 }
 
-output "team_main_deploy_ssh_public_key_fingerprint_md5" {
-  value = tls_private_key.team_main_deploy_key.public_key_fingerprint_md5
+output "deploy_public_key_fingerprint_sha256" {
+  value = [for k in tls_private_key.this : k.public_key_fingerprint_sha256]
 }
 
-output "team_main_deploy_ssh_public_key_fingerprint_sha256" {
-  value = tls_private_key.team_main_deploy_key.public_key_fingerprint_sha256
+output "deploy_public_keys_map" {
+  value = {
+    for i, r in var.repository_names : r => {
+      for j, k in var.deploy_keys : k.name => {
+        public_key_openssh            = tls_private_key.this[i * j].public_key_openssh
+        public_key_pem                = tls_private_key.this[i * j].public_key_pem
+        public_key_fingerprint_md5    = tls_private_key.this[i * j].public_key_fingerprint_md5
+        public_key_fingerprint_sha256 = tls_private_key.this[i * j].public_key_fingerprint_sha256
+      }
+    }
+  }
 }
 
-# output "team_main_deploy_ssh_private_key_openssh" {
-#   value     = tls_private_key.team_main_deploy_key.private_key_openssh
-#   sensitive = true
-# }
-
-# output "team_main_deploy_ssh_private_key_pem" {
-#   value     = tls_private_key.team_main_deploy_key.private_key_pem
-#   sensitive = true
-# }
+output "deploy_private_keys_map" {
+  sensitive = true
+  value     = {
+    for i, r in var.repository_names : r => {
+      for j, k in var.deploy_keys : k.name => {
+        private_key_openssh = tls_private_key.this[i * j].private_key_openssh
+        private_key_pem     = tls_private_key.this[i * j].private_key_pem
+      }
+    }
+  }
+}

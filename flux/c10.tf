@@ -75,8 +75,8 @@ resource "kubernetes_secret" "flux_infra_deploy_key_c10" {
   }
 
   data = {
-    identity       = tls_private_key.flux_infra_deploy_key[local.cluster_index[10]].private_key_pem
-    "identity.pub" = tls_private_key.flux_infra_deploy_key[local.cluster_index[10]].public_key_pem
+    identity       = data.terraform_remote_state.repositories.outputs.deploy_private_keys_map[var.github_repository_name].cd.private_key_pem
+    "identity.pub" = data.terraform_remote_state.repositories.outputs.deploy_public_keys_map[var.github_repository_name].cd.public_key_pem
     known_hosts    = local.known_hosts
   }
 }

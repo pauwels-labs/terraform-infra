@@ -40,18 +40,26 @@ resource "aws_ecr_repository" "pauwels_labs_redact_data_cache" {
 }
 
 resource "aws_ecr_repository" "pauwels_labs_homepage" {
-  name                 = "pauwels-labs/homepage"
+  name                 = "t/pauwels-labs-main/github/pauwels-labs/homepage"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
   }
+
+  tags = {
+    TenantName = "pauwels-labs-main"
+  }
 }
 
 resource "aws_ecr_repository" "pauwels_labs_homepage_cache" {
-  name                 = "pauwels-labs/homepage/cache"
+  name                 = "t/pauwels-labs-main/github/pauwels-labs/homepage/cache"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
+  }
+
+  tags = {
+    TenantName = "pauwels-labs-main"
   }
 }
 
@@ -609,6 +617,30 @@ resource "aws_ecr_repository" "tektoncd_webhook" {
 
 resource "aws_ecr_repository" "amazon_aws_cli_with_jq" {
   name                 = "amazon/aws-cli-with-jq"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "semantic_release" {
+  name                 = "i/semantic-release/semantic-release"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "change" {
+  name                 = "i/change/change"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "node" {
+  name                 = "i/node/node"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false

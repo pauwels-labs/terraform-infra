@@ -1,4 +1,5 @@
 locals {
-  flux_infra_repository_name = "flux-infra"
-  team_main_repository_name  = "team-main"
+  repo_count      = length(var.repository_names)
+  repo_key_count  = length(var.deploy_keys)
+  total_key_count = local.repo_count * local.repo_key_count
 }
