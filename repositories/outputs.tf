@@ -22,10 +22,10 @@ output "deploy_public_keys_map" {
   value = {
     for i, r in var.repository_names : r => {
       for j, k in var.deploy_keys : k.name => {
-        public_key_openssh            = tls_private_key.this[i * j].public_key_openssh
-        public_key_pem                = tls_private_key.this[i * j].public_key_pem
-        public_key_fingerprint_md5    = tls_private_key.this[i * j].public_key_fingerprint_md5
-        public_key_fingerprint_sha256 = tls_private_key.this[i * j].public_key_fingerprint_sha256
+        public_key_openssh            = tls_private_key.this[(i * local.repo_key_count) + j].public_key_openssh
+        public_key_pem                = tls_private_key.this[(i * local.repo_key_count) + j].public_key_pem
+        public_key_fingerprint_md5    = tls_private_key.this[(i * local.repo_key_count) + j].public_key_fingerprint_md5
+        public_key_fingerprint_sha256 = tls_private_key.this[(i * local.repo_key_count) + j].public_key_fingerprint_sha256
       }
     }
   }
@@ -36,8 +36,8 @@ output "deploy_private_keys_map" {
   value     = {
     for i, r in var.repository_names : r => {
       for j, k in var.deploy_keys : k.name => {
-        private_key_openssh = tls_private_key.this[i * j].private_key_openssh
-        private_key_pem     = tls_private_key.this[i * j].private_key_pem
+        private_key_openssh = tls_private_key.this[(i * local.repo_key_count) + j].private_key_openssh
+        private_key_pem     = tls_private_key.this[(i * local.repo_key_count) + j].private_key_pem
       }
     }
   }

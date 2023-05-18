@@ -31,16 +31,16 @@ module "c23" {
   create_cni_ipv6_iam_policy = var.use_ipv6
   cluster_service_ipv4_cidr  = var.use_ipv6 ? null : var.cluster_service_cidr
 
-  cluster_identity_providers = {
-    lefranc-0 = {
-      client_id       = "kubernetes"
-      issuer_url      = "https://identity.pauwelslabs.com/realms/pauwels-labs-main"
-      username_claim  = "user_id"
-      username_prefix = "oidc:"
-      groups_claim    = "groups"
-      groups_prefix   = "oidc:"
-    }
-  }
+  # cluster_identity_providers = {
+  #   lefranc-0 = {
+  #     client_id       = "kubernetes"
+  #     issuer_url      = "https://identity.pauwelslabs.com/realms/pauwels-labs-main"
+  #     username_claim  = "user_id"
+  #     username_prefix = "oidc:"
+  #     groups_claim    = "groups"
+  #     groups_prefix   = "oidc:"
+  #   }
+  # }
 
   cluster_addons = {
     coredns = {
@@ -101,6 +101,15 @@ module "c23" {
       description      = "Egress all SSH to internet"
       from_port        = 22
       to_port          = 22
+      protocol         = "tcp"
+      type             = "egress"
+      ipv6_cidr_blocks = ["::/0"]
+    }
+
+    allow_all_mongodb_outbound = {
+      description      = "Egress all MongoDB to internet"
+      from_port        = 27017
+      to_port          = 27017
       protocol         = "tcp"
       type             = "egress"
       ipv6_cidr_blocks = ["::/0"]

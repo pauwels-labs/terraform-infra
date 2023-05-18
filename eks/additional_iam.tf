@@ -848,8 +848,7 @@ data "aws_iam_policy_document" "vault_auto_unseal" {
         test     = "StringEquals"
         variable = "${local.clusters[statement.key].oidc_provider}:sub"
         values   = [
-          "system:serviceaccount:i-vault:vault",
-          "system:serviceaccount:i-vault:vault2"
+          "system:serviceaccount:i-vault:vault"
         ]
       }
     }
@@ -892,8 +891,7 @@ data "aws_iam_policy_document" "vault_trust_policy" {
         test     = "StringEquals"
         variable = "${statement.value.oidc_provider}:sub"
         values   = [
-          "system:serviceaccount:i-vault:vault",
-          "system:serviceaccount:i-vault:vault2"
+          "system:serviceaccount:i-vault:vault"
         ]
       }
     }
@@ -929,6 +927,7 @@ data "aws_iam_policy_document" "cluster_autoscaler" {
       "autoscaling:DescribeAutoScalingInstances",
       "autoscaling:DescribeAutoScalingGroups",
       "ec2:DescribeLaunchTemplateVersions",
+      "ec2:DescribeInstanceTypes",
       "autoscaling:DescribeTags",
       "autoscaling:DescribeLaunchConfigurations"
     ]
@@ -1018,4 +1017,118 @@ resource "aws_iam_role_policy_attachment" "grant_autoscaling_access_to_cluster_a
 
   role       = aws_iam_role.cluster_autoscaler.name
   policy_arn = aws_iam_policy.cluster_autoscaler.arn
+}
+
+# Mimir role
+data "aws_iam_policy_document" "mimir" {
+  count = var.use_mimir ? 1 : 0
+
+  statement {
+    effect    = "Allow"
+    actions   = [
+      "kms:Decrypt",
+      "kms:GenerateDataKey"
+    ]
+    resources = ["*"]
+    condition {
+      test     = "ForAnyValue:StringEquals"
+      variable = "kms:ResourceAliases"
+      values   = [
+        var.mimir_ruler_key_alias_name,
+        var.mimir_blocks_key_alias_name
+      ]
+    }
+  }
+  statement {
+    effect    = "Allow"
+    actions   = [
+      "s3:PutObject",
+      "s3:GetObject",
+      "s3:DeleteObject",
+      "s3:GetObjectAttributes"
+    ]
+    resources = [
+      "${var.mimir_ruler_bucket_arn}/*",
+      "${var.mimir_blocks_bucket_arn}/*"
+    ]
+  }
+  statement {
+    effect    = "Allow"
+    actions   = [
+      "s3:ListBucket"
+    ]
+    resources = [
+      "${var.mimir_ruler_bucket_arn}",
+      "${var.mimir_blocks_bucket_arn}"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "mimir" {
+  provider = aws.cluster
+  count = var.use_mimir ? 1 : 0
+  
+  name        = "AllowMimir-${var.cluster_name}"
+  description = "Allows the various Mimir services in the ${var.cluster_name} k8s clusters to store objects in S3 buckets"
+  policy      = data.aws_iam_policy_document.mimir[0].json
+}
+
+data "aws_iam_policy_document" "mimir_trust_policy" {
+  count = var.use_mimir ? 1 : 0
+
+  dynamic "statement" {
+    for_each = local.clusters
+
+    content {
+      actions   = [
+        "sts:AssumeRoleWithWebIdentity"
+      ]
+      effect    = "Allow"
+
+      principals {
+        type = "Federated"
+        identifiers = [
+          statement.value.oidc_provider_arn
+        ]
+      }
+
+      condition {
+        test     = "StringEquals"
+        variable = "${statement.value.oidc_provider}:aud"
+        values   = [
+          "sts.amazonaws.com"
+        ]
+      }
+      condition {
+        test     = "StringEquals"
+        variable = "${statement.value.oidc_provider}:sub"
+        values   = [
+          "system:serviceaccount:i-grafana-mimir:grafana-mimir"
+        ]
+      }
+    }
+  }
+}
+
+resource "aws_iam_role" "mimir" {
+  provider = aws.cluster
+  count = var.use_mimir ? 1 : 0
+
+  name = "${var.cluster_name}-mimir"
+
+  assume_role_policy = data.aws_iam_policy_document.mimir_trust_policy[0].json
+
+  tags = {
+    Name        = "${var.cluster_name}-mimir"
+    Description = "Role used to allow Mimir services in the ${var.cluster_name} clusters to store objects in S3"
+    Cluster     = var.cluster_name
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "grant_s3_access_to_mimir_role" {
+  provider = aws.cluster
+  count = var.use_mimir ? 1 : 0
+
+  role       = aws_iam_role.mimir[0].name
+  policy_arn = aws_iam_policy.mimir[0].arn
 }

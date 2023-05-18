@@ -14,12 +14,11 @@ terraform {
   required_providers {
     github = {
       source = "integrations/github"
-      version = ">= 4.28.0"
+      version = ">= 5.25.0"
     }
   }
 }
 
 provider "github" {
-  token = ""
   owner = var.github_org_name
 }

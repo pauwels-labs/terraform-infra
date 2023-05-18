@@ -79,6 +79,7 @@ data aws_iam_policy_document "allow_tenant_rw_access_to_ecr_namespace" {
       "ecr:InitiateLayerUpload",
       "ecr:UploadLayerPart",
       "ecr:CompleteLayerUpload",
+      "ecr:ListImages"
     ]
     resources = [
       "${local.ecr_arn}/*"

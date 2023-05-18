@@ -22,7 +22,7 @@ terraform {
     }
     flux = {
       source  = "fluxcd/flux"
-      version = ">= 0.15.0-dev"
+      version = ">= 0.25.3"
     }
     tls = {
       source  = "hashicorp/tls"
@@ -36,7 +36,6 @@ provider "flux" {}
 provider "kubectl" {}
 
 provider "github" {
-  token = ""
   owner = var.github_org_name
 }
 

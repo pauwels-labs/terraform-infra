@@ -28,7 +28,7 @@ resource "github_repository_deploy_key" "this" {
   title      = var.deploy_keys[count.index % local.repo_key_count].name
   repository = github_repository.this[floor(count.index / local.repo_key_count)].name
   key        = tls_private_key.this[count.index].public_key_openssh
-  read_only  = !var.deploy_keys[count.index % local.repo_key_count].rw
+  read_only  = github_repository.this[floor(count.index / local.repo_key_count)].name == "team-main" && var.deploy_keys[count.index % local.repo_key_count].name == "cd" ? false : !var.deploy_keys[count.index % local.repo_key_count].rw
 }
 
 resource "local_file" "deploy_private_key_openssh" {

@@ -9,6 +9,21 @@ VPC for engineering-deployments-prod-0 EKS cluster in eu-west-1:
 VPC for prod aurora postgres serverless server:
 10.20.0.0/16
 
+# Authentication
+
+Some components need tokens for authenticating to certain services,
+namely:
+
+1. GitHub tokens required for flux/ and repositories/ modules
+
+2. Keycloak token required for the keycloak/ module
+
+In cases where manually provided tokens are required, a
+`config.env.tmpl` is provided in the module which contains all the
+environment variables which would be required in a `*.env`
+file. Simply copy the file to `config.env`, fill in the details, and
+`source config.env` for authentication to work.
+
 # Caveats
 
 ## EKS

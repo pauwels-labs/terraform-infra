@@ -14,8 +14,36 @@ resource "aws_route53_zone" "dev_pauwelslabs_com" {
   name = "dev.pauwelslabs.com"  
 }
 
+resource "aws_route53_zone" "staging_pauwelslabs_com" {
+  name = "staging.pauwelslabs.com"  
+}
+
 resource "aws_route53_zone" "redact_ws" {
   name = "redact.ws"
+}
+
+resource "aws_route53_zone" "dev_redact_ws" {
+  name = "dev.redact.ws"
+}
+
+resource "aws_route53_zone" "staging_redact_ws" {
+  name = "staging.redact.ws"
+}
+
+resource "aws_route53_record" "redact_ws_dev_ns" {
+  zone_id = aws_route53_zone.redact_ws.zone_id
+  name    = "dev.redact.ws"
+  type    = "NS"
+  ttl     = "60"
+  records = aws_route53_zone.dev_redact_ws.name_servers
+}
+
+resource "aws_route53_record" "redact_ws_staging_ns" {
+  zone_id = aws_route53_zone.redact_ws.zone_id
+  name    = "staging.redact.ws"
+  type    = "NS"
+  ttl     = "60"
+  records = aws_route53_zone.staging_redact_ws.name_servers
 }
 
 resource "aws_route53_record" "docs_redact_ws_cname" {
@@ -106,4 +134,12 @@ resource "aws_route53_record" "pauwelslabs_com_dev_ns" {
   type    = "NS"
   ttl     = "60"
   records = aws_route53_zone.dev_pauwelslabs_com.name_servers
+}
+
+resource "aws_route53_record" "pauwelslabs_com_staging_ns" {
+  zone_id = aws_route53_zone.pauwelslabs_com.zone_id
+  name    = "staging.pauwelslabs.com"
+  type    = "NS"
+  ttl     = "60"
+  records = aws_route53_zone.staging_pauwelslabs_com.name_servers
 }

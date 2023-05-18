@@ -37,6 +37,9 @@ resource "kubernetes_manifest" "flux_install_content_c20" {
     "metadata",
     "spec.template.spec.containers"
   ]
+  field_manager {
+    force_conflicts = true
+  }
 
   depends_on = [
     kubernetes_namespace.flux_system_c20

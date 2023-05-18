@@ -214,3 +214,33 @@ variable "use_databases" {
   type        = bool
   default     = false
 }
+
+variable "use_mimir" {
+  description = "Set to true to deploy a Grafana Mimir role for accessing backing S3 buckets"
+  type        = bool
+  default     = false
+}
+
+variable "mimir_ruler_bucket_arn" {
+  description = "ARN of the S3 bucket to use for storing Mimir ruler objects"
+  type        = string
+  default     = ""
+}
+
+variable "mimir_ruler_key_alias_name" {
+  description = "Name of the alias (in alias/<alias name> format)of the KMS key to use for encryting and decrypting Mimir ruler objects stored in S3"
+  type        = string
+  default     = ""
+}
+
+variable "mimir_blocks_bucket_arn" {
+  description = "ARN of the S3 bucket to use for storing Mimir blocks objcts"
+  type        = string
+  default     = ""
+}
+
+variable "mimir_blocks_key_alias_name" {
+  description = "Name of the alias (in alias/<alias name> fomat) of the KMS key to use for encryting and decrypting Mimir blocks objects stored in S3"
+  type        = string
+  default     = ""
+}

@@ -7,18 +7,26 @@ provider "aws" {
 }
 
 resource "aws_ecr_repository" "pauwels_labs_redact_store" {
-  name                 = "pauwels-labs/redact-store"
+  name                 = "t/pauwels-labs-main/github/pauwels-labs/redact-store"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
   }
+
+  tags = {
+    TenantName = "pauwels-labs-main"
+  }
 }
 
 resource "aws_ecr_repository" "pauwels_labs_redact_store_cache" {
-  name                 = "pauwels-labs/redact-store/cache"
+  name                 = "t/pauwels-labs-main/github/pauwels-labs/redact-store/cache"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
+  }
+
+  tags = {
+    TenantName = "pauwels-labs-main"
   }
 }
 
@@ -53,6 +61,30 @@ resource "aws_ecr_repository" "pauwels_labs_homepage" {
 
 resource "aws_ecr_repository" "pauwels_labs_homepage_cache" {
   name                 = "t/pauwels-labs-main/github/pauwels-labs/homepage/cache"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+
+  tags = {
+    TenantName = "pauwels-labs-main"
+  }
+}
+
+resource "aws_ecr_repository" "pauwels_labs_redact_website" {
+  name                 = "t/pauwels-labs-main/github/pauwels-labs/redact-website"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+
+  tags = {
+    TenantName = "pauwels-labs-main"
+  }
+}
+
+resource "aws_ecr_repository" "pauwels_labs_redact_website_cache" {
+  name                 = "t/pauwels-labs-main/github/pauwels-labs/redact-website/cache"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
@@ -104,50 +136,50 @@ resource "aws_ecr_repository" "pauwels_labs_toml_editor_cache" {
 }
 
 resource "aws_ecr_repository" "pauwels_labs_redact_feed_ui" {
-  name                 = "pauwels-labs/redact-feed-ui"
+  name                 = "t/pauwels-labs-main/github/pauwels-labs/redact-feed-ui"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
+  }
+
+  tags = {
+    TenantName = "pauwels-labs-main"
   }
 }
 
 resource "aws_ecr_repository" "pauwels_labs_redact_feed_ui_cache" {
-  name                 = "pauwels-labs/redact-feed-ui/cache"
+  name                 = "t/pauwels-labs-main/github/pauwels-labs/redact-feed-ui/cache"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
+  }
+
+  tags = {
+    TenantName = "pauwels-labs-main"
   }
 }
 
 resource "aws_ecr_repository" "pauwels_labs_redact_feed_api" {
-  name                 = "pauwels-labs/redact-feed-api"
+  name                 = "t/pauwels-labs-main/github/pauwels-labs/redact-feed-api"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
+  }
+
+  tags = {
+    TenantName = "pauwels-labs-main"
   }
 }
 
 resource "aws_ecr_repository" "pauwels_labs_redact_feed_api_cache" {
-  name                 = "pauwels-labs/redact-feed-api/cache"
+  name                 = "t/pauwels-labs-main/github/pauwels-labs/redact-feed-api/cache"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
   }
-}
 
-resource "aws_ecr_repository" "pauwels_labs_redact_website" {
-  name                 = "pauwels-labs/redact-website"
-  image_tag_mutability = "MUTABLE"
-  image_scanning_configuration {
-    scan_on_push = false
-  }
-}
-
-resource "aws_ecr_repository" "pauwels_labs_redact_website_cache" {
-  name                 = "pauwels-labs/redact-website/cache"
-  image_tag_mutability = "MUTABLE"
-  image_scanning_configuration {
-    scan_on_push = false
+  tags = {
+    TenantName = "pauwels-labs-main"
   }
 }
 
@@ -248,7 +280,7 @@ resource "aws_ecr_repository" "istio_proxyv2" {
 }
 
 resource "aws_ecr_repository" "kiali" {
-  name                 = "kiali/kiali"
+  name                 = "i/kiali/kiali"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
@@ -256,7 +288,7 @@ resource "aws_ecr_repository" "kiali" {
 }
 
 resource "aws_ecr_repository" "kiali_operator" {
-  name                 = "kiali/kiali-operator"
+  name                 = "i/kiali/kiali-operator"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
@@ -432,7 +464,7 @@ resource "aws_ecr_repository" "ebs_csi_driver_helm" {
 }
 
 resource "aws_ecr_repository" "weave_gitops" {
-  name                 = "weaveworks/wego-app"
+  name                 = "i/weaveworks/wego-app"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
@@ -528,7 +560,23 @@ resource "aws_ecr_repository" "blackbox_exporter" {
 }
 
 resource "aws_ecr_repository" "grafana" {
-  name                 = "grafana/grafana"
+  name                 = "i/grafana/grafana"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "kiwigrid_k8s_sidecar" {
+  name                 = "i/kiwigrid/k8s-sidecar"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "grafana_helm" {
+  name                 = "helm/grafana/grafana"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
@@ -592,7 +640,7 @@ resource "aws_ecr_repository" "kube_rbac_proxy" {
 }
 
 resource "aws_ecr_repository" "configmap_reload" {
-  name                 = "jimmidyson/configmap-reload"
+  name                 = "i/jimmidyson/configmap-reload"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
@@ -609,6 +657,14 @@ resource "aws_ecr_repository" "tektoncd_controller" {
 
 resource "aws_ecr_repository" "tektoncd_webhook" {
   name                 = "tektoncd/webhook"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "tektoncd_dashboard" {
+  name                 = "i/tektoncd/dashboard"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
@@ -641,6 +697,118 @@ resource "aws_ecr_repository" "change" {
 
 resource "aws_ecr_repository" "node" {
   name                 = "i/node/node"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "opentelemetry_collector" {
+  name                 = "i/otel/opentelemetry-collector"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "opentelemetry_collector_contrib" {
+  name                 = "i/otel/opentelemetry-collector-contrib"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "opentelemetry_collector_helm" {
+  name                 = "helm/open-telemetry/opentelemetry-collector"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "jaeger_operator" {
+  name                 = "i/jaeger/operator"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "grafana_agent_helm" {
+  name                 = "helm/grafana/grafana-agent"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "grafana_mimir" {
+  name                 = "i/grafana/mimir"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "grafana_mimir_distributed_helm" {
+  name                 = "helm/grafana/mimir-distributed"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "grafana_agent" {
+  name                 = "i/grafana/agent"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "grafana_agent_operator" {
+  name                 = "i/grafana/agent-operator"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "grafana_agent_operator_helm" {
+  name                 = "helm/grafana/grafana-agent-operator"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "grafana_mimir_continuous_test" {
+  name                 = "i/grafana/mimir-continuous-test"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "cortex_tenant" {
+  name                 = "i/cortex/tenant"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "cluster_autoscaler" {
+  name                 = "i/k8s/autoscaling/cluster-autoscaler"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "rust" {
+  name                 = "i/rust"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false

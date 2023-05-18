@@ -18,6 +18,16 @@ resource "aws_ecr_repository_policy" "pauwels_labs_homepage_cache" {
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
 
+resource "aws_ecr_repository_policy" "pauwels_labs_redact_website" {
+  repository = aws_ecr_repository.pauwels_labs_redact_website.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "pauwels_labs_redact_website_cache" {
+  repository = aws_ecr_repository.pauwels_labs_redact_website_cache.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
 resource "aws_ecr_repository_policy" "pauwels_labs_redact_client" {
   repository = aws_ecr_repository.pauwels_labs_redact_client.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
@@ -70,16 +80,6 @@ resource "aws_ecr_repository_policy" "pauwels_labs_redact_feed_api" {
 
 resource "aws_ecr_repository_policy" "pauwels_labs_redact_feed_api_cache" {
   repository = aws_ecr_repository.pauwels_labs_redact_feed_api_cache.name
-  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
-}
-
-resource "aws_ecr_repository_policy" "pauwels_labs_redact_website" {
-  repository = aws_ecr_repository.pauwels_labs_redact_website.name
-  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
-}
-
-resource "aws_ecr_repository_policy" "pauwels_labs_redact_website_cache" {
-  repository = aws_ecr_repository.pauwels_labs_redact_website_cache.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
 
@@ -323,6 +323,16 @@ resource "aws_ecr_repository_policy" "grafana" {
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
 
+resource "aws_ecr_repository_policy" "kiwigrid_k8s_sidecar" {
+  repository = aws_ecr_repository.kiwigrid_k8s_sidecar.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "grafana_helm" {
+  repository = aws_ecr_repository.grafana_helm.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
 resource "aws_ecr_repository_policy" "kube_state_metrics" {
   repository = aws_ecr_repository.kube_state_metrics.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
@@ -373,6 +383,11 @@ resource "aws_ecr_repository_policy" "tektoncd_webhook" {
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
 
+resource "aws_ecr_repository_policy" "tektoncd_dashboard" {
+  repository = aws_ecr_repository.tektoncd_dashboard.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
 resource "aws_ecr_repository_policy" "amazon_aws_cli_with_jq" {
   repository = aws_ecr_repository.amazon_aws_cli_with_jq.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
@@ -390,5 +405,75 @@ resource "aws_ecr_repository_policy" "change" {
 
 resource "aws_ecr_repository_policy" "node" {
   repository = aws_ecr_repository.node.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "opentelemetry_collector" {
+  repository = aws_ecr_repository.opentelemetry_collector.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "opentelemetry_collector_contrib" {
+  repository = aws_ecr_repository.opentelemetry_collector_contrib.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "opentelemetry_collector_helm" {
+  repository = aws_ecr_repository.opentelemetry_collector_helm.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "jaeger_operator" {
+  repository = aws_ecr_repository.jaeger_operator.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "grafana_agent_helm" {
+  repository = aws_ecr_repository.grafana_agent_helm.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "grafana_mimir" {
+  repository = aws_ecr_repository.grafana_mimir.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "grafana_mimir_distributed_helm" {
+  repository = aws_ecr_repository.grafana_mimir_distributed_helm.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "grafana_agent" {
+  repository = aws_ecr_repository.grafana_agent.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "grafana_agent_operator" {
+  repository = aws_ecr_repository.grafana_agent_operator.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "grafana_agent_operator_helm" {
+  repository = aws_ecr_repository.grafana_agent_operator_helm.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "grafana_mimir_continuous_test" {
+  repository = aws_ecr_repository.grafana_mimir_continuous_test.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "cortex_tenant" {
+  repository = aws_ecr_repository.cortex_tenant.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "cluster_autoscaler" {
+  repository = aws_ecr_repository.cluster_autoscaler.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "rust" {
+  repository = aws_ecr_repository.rust.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }

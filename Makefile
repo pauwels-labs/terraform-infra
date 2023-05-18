@@ -1,5 +1,6 @@
 CODE := 000000
 USER := ""
+TOTP := "keepassxc"
 
 all: get-token
 	@aws configure set aws_access_key_id $(shell cat session.json | jq -r .Credentials.AccessKeyId) --profile mfa
@@ -7,4 +8,4 @@ all: get-token
 	@aws configure set aws_session_token $(shell cat session.json | jq -r .Credentials.SessionToken) --profile mfa
 
 get-token:
-	@aws sts get-session-token --serial-number arn:aws:iam::404672225309:mfa/${USER} --token-code ${CODE} --profile user --output json > session.json
+	@aws sts get-session-token --serial-number arn:aws:iam::404672225309:mfa/${TOTP} --token-code ${CODE} --profile user --output json > session.json
