@@ -15,6 +15,14 @@ resource "aws_iam_user" "sacksminnelli" {
   }  
 }
 
+resource "aws_iam_user" "dzcostaneto" {
+  name = "dzcostaneto"
+  tags = {
+    full-name = "Costa Neto"
+    email     = "costa@pauwelslabs.com"
+  }
+}
+
 resource "aws_iam_user" "kapdin" {
   name = "kapdin"
   tags = {
@@ -27,7 +35,7 @@ resource "aws_iam_user" "kapdin" {
 resource "aws_iam_user_login_profile" "pauwels" {
   user = aws_iam_user.pauwels.name
   pgp_key = "keybase:pauwels"
-  password_length = 32  
+  password_length = 32
 }
 
 output "pauwels_login_encrypted_password" {
@@ -42,6 +50,16 @@ resource "aws_iam_user_login_profile" "sacksminnelli" {
 
 output "sacksminnelli_login_encrypted_password" {
   value = aws_iam_user_login_profile.sacksminnelli.encrypted_password
+}
+
+resource "aws_iam_user_login_profile" "dzcostaneto" {
+  user = aws_iam_user.dzcostaneto.name
+  pgp_key = "keybase:dzcostaneto"
+  password_length = 32
+}
+
+output "dzcostaneto_login_encrypted_password" {
+  value = aws_iam_user_login_profile.dzcostaneto.encrypted_password
 }
 
 resource "aws_iam_user_login_profile" "kapdin" {
@@ -69,6 +87,14 @@ resource "aws_iam_user_group_membership" "sacksminnelli" {
   user = aws_iam_user.sacksminnelli.name
 
   groups = []
+}
+
+resource "aws_iam_user_group_membership" "dzcostaneto" {
+  user = aws_iam_user.sacksminnelli.name
+
+  groups = [
+    aws_iam_group.new_users.name
+  ]
 }
 
 resource "aws_iam_user_group_membership" "kapdin" {
