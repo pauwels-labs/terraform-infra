@@ -1,0 +1,73 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: TF_REPLACE_NAME
+  namespace: "${tenantnamespaceprefix}TF_REPLACE_TENANT_NAME"
+spec:
+  interval: 1m0s
+  serviceAccountName: TF_REPLACE_TENANT_NAME
+  targetNamespace: "${tenantnamespaceprefix}TF_REPLACE_TENANT_NAME"
+  sourceRef:
+    kind: GitRepository
+    name: TF_REPLACE_REPOSITORY_HOST-TF_REPLACE_ORG_NAME-TF_REPLACE_NAME
+  images:
+  - name: appimage
+    newName: TF_REPLACE_CONTAINER_REGISTRY_DOMAIN/t/TF_REPLACE_TENANT_NAME/TF_REPLACE_REPOSITORY_HOST/TF_REPLACE_ORG_NAME/TF_REPLACE_NAME # {"$imagepolicy": "t-TF_REPLACE_TENANT_NAME:TF_REPLACE_NAME:name"}
+    newTag: v0.0.1 # {"$imagepolicy": "t-TF_REPLACE_TENANT_NAME:TF_REPLACE_NAME:tag"}
+  path: ./deploy/dev
+  prune: true
+  wait: true
+  timeout: 30s
+  postBuild:
+    substitute:
+      name: "TF_REPLACE_NAME"
+      namesuffix: TF_REPLACE_ENV_SUFFIX
+      domain: "pauwelslabs.com"
+      tenantname: "TF_REPLACE_TENANT_NAME"
+    substituteFrom:
+    - kind: ConfigMap
+      name: external-infra-data
+    - kind: ConfigMap
+      name: external-tenant-data
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: GitRepository
+metadata:
+  name: TF_REPLACE_REPOSITORY_HOST-TF_REPLACE_ORG_NAME-TF_REPLACE_NAME
+  namespace: "${tenantnamespaceprefix}TF_REPLACE_TENANT_NAME"
+  labels:
+    toolkit.fluxcd.io/tenant: TF_REPLACE_TENANT_NAME
+spec:
+  interval: 1m
+  ref:
+    branch: main
+  secretRef:
+    name: ssh-TF_REPLACE_TENANT_NAME-TF_REPLACE_REPOSITORY_HOST-TF_REPLACE_ORG_NAME-TF_REPLACE_NAME
+  url: ssh://git@github.com/TF_REPLACE_ORG_NAME/TF_REPLACE_NAME
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: TF_REPLACE_NAME
+  namespace: "${tenantnamespaceprefix}TF_REPLACE_TENANT_NAME"
+  labels:
+    toolkit.fluxcd.io/tenant: TF_REPLACE_TENANT_NAME
+spec:
+  image: TF_REPLACE_CONTAINER_REGISTRY_DOMAIN/t/TF_REPLACE_TENANT_NAME/TF_REPLACE_REPOSITORY_HOST/TF_REPLACE_ORG_NAME/TF_REPLACE_NAME
+  interval: 1m0s
+  secretRef:
+    name: ecr-credentials
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: TF_REPLACE_NAME
+  namespace: "${tenantnamespaceprefix}TF_REPLACE_TENANT_NAME"
+  labels:
+    toolkit.fluxcd.io/tenant: TF_REPLACE_TENANT_NAME
+spec:
+  imageRepositoryRef:
+    name: TF_REPLACE_NAME
+  policy:
+    semver:
+      range: ">=0.0.0 <1.0.0"
