@@ -79,8 +79,8 @@ module "c0" {
 
     allow_tekton_webhook = {
       description                   = "Cluster API to Tekton webhook and Gatekeeper webhook"
-      from_port                     = 8445
-      to_port                       = 8445
+      from_port                     = 8443
+      to_port                       = 8443
       protocol                      = "tcp"
       type                          = "ingress"
       source_cluster_security_group = true

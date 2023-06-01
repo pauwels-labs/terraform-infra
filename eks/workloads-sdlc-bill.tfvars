@@ -2,7 +2,7 @@ cluster_count        = 1
 cluster_region       = "eu-west-1"
 cluster_name         = "bill"
 cluster_description  = "Contains client hosted workloads"
-cluster_version      = "1.25"
+cluster_version      = "1.26"
 cluster_vpc_cidr     = "10.10.0.0/16"
 cluster_service_cidr = "10.100.0.0/16"
 ha_nat_gateways      = false
@@ -11,6 +11,18 @@ az_count = 3
 
 cluster_account_id               = "601743579976"
 cluster_account_assume_role_name = "OrganizationAccountAccessRole"
+
+cluster_instance_types = [
+  "m5.xlarge",
+  "m5d.xlarge",
+  "m5a.xlarge",
+  "m5ad.xlarge",
+  "m5n.xlarge",
+  "m5dn.xlarge",
+  "m5zn.xlarge",
+  "t3.xlarge",
+  "t3a.xlarge",
+]
 
 keys_account_id               = "760517686064"
 keys_account_assume_role_name = "OrganizationAccountAccessRole"

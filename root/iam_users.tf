@@ -90,10 +90,13 @@ resource "aws_iam_user_group_membership" "sacksminnelli" {
 }
 
 resource "aws_iam_user_group_membership" "dzcostaneto" {
-  user = aws_iam_user.sacksminnelli.name
+  user = aws_iam_user.dzcostaneto.name
 
   groups = [
-    aws_iam_group.new_users.name
+    aws_iam_group.self_service_auth_with_mfa.name,
+    aws_iam_group.workloads_sdlc_engineering_dev_administrators.name,
+    aws_iam_group.deployments_prod_engineering_deployments_prod_administrators.name,
+    aws_iam_group.terraform_backend.name
   ]
 }
 
@@ -101,10 +104,5 @@ resource "aws_iam_user_group_membership" "kapdin" {
   user = aws_iam_user.kapdin.name
 
   groups = [
-    aws_iam_group.self_service_auth_with_mfa.name,
-    aws_iam_group.workloads_sdlc_engineering_dev_administrators.name,
-    aws_iam_group.deployments_prod_engineering_deployments_prod_administrators.name,
-    aws_iam_group.sandbox_kacper_dworski_administrators.name,
-    aws_iam_group.terraform_backend.name
   ]
 }

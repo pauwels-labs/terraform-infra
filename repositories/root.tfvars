@@ -5,7 +5,8 @@ repository_names = [
   "homepage",
   "redact-store",
   "redact-feed-api",
-  "redact-feed-ui"
+  "redact-feed-ui",
+  "protonmail-bridge-docker"
 ]
 deploy_keys = [
   {

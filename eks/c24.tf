@@ -31,17 +31,6 @@ module "c24" {
   create_cni_ipv6_iam_policy = var.use_ipv6
   cluster_service_ipv4_cidr  = var.use_ipv6 ? null : var.cluster_service_cidr
 
-  # cluster_identity_providers = {
-  #   lefranc-0 = {
-  #     client_id       = "kubernetes"
-  #     issuer_url      = "https://identity.pauwelslabs.com/realms/pauwels-labs-main"
-  #     username_claim  = "user_id"
-  #     username_prefix = "oidc:"
-  #     groups_claim    = "groups"
-  #     groups_prefix   = "oidc:"
-  #   }
-  # }
-
   cluster_addons = {
     coredns = {
       resolve_conflicts = "OVERWRITE"

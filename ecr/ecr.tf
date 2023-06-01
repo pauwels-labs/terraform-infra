@@ -183,6 +183,30 @@ resource "aws_ecr_repository" "pauwels_labs_redact_feed_api_cache" {
   }
 }
 
+resource "aws_ecr_repository" "pauwels_labs_protonmail_bridge_docker" {
+  name                 = "t/pauwels-labs-main/github/pauwels-labs/protonmail-bridge-docker"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+
+  tags = {
+    TenantName = "pauwels-labs-main"
+  }
+}
+
+resource "aws_ecr_repository" "pauwels_labs_protonmail_bridge_docker_cache" {
+  name                 = "t/pauwels-labs-main/github/pauwels-labs/protonmail-bridge-docker/cache"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+
+  tags = {
+    TenantName = "pauwels-labs-main"
+  }
+}
+
 resource "aws_ecr_repository" "amazon_lb_controller" {
   name                 = "amazon/aws-load-balancer-controller"
   image_tag_mutability = "MUTABLE"
@@ -759,6 +783,30 @@ resource "aws_ecr_repository" "grafana_mimir_distributed_helm" {
   }
 }
 
+resource "aws_ecr_repository" "grafana_loki" {
+  name                 = "i/grafana/loki"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "grafana_loki_canary" {
+  name                 = "i/grafana/loki-canary"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "grafana_loki_helm" {
+  name                 = "helm/grafana/loki"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
 resource "aws_ecr_repository" "grafana_agent" {
   name                 = "i/grafana/agent"
   image_tag_mutability = "MUTABLE"
@@ -809,6 +857,14 @@ resource "aws_ecr_repository" "cluster_autoscaler" {
 
 resource "aws_ecr_repository" "rust" {
   name                 = "i/rust"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "kubectl" {
+  name                 = "i/bitnami/kubectl"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false

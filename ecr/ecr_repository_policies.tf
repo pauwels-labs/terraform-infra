@@ -83,6 +83,16 @@ resource "aws_ecr_repository_policy" "pauwels_labs_redact_feed_api_cache" {
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
 
+resource "aws_ecr_repository_policy" "pauwels_labs_protonmail_bridge_docker" {
+  repository = aws_ecr_repository.pauwels_labs_protonmail_bridge_docker.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "pauwels_labs_protonmail_bridge_docker_cache" {
+  repository = aws_ecr_repository.pauwels_labs_protonmail_bridge_docker_cache.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
 resource "aws_ecr_repository_policy" "amazon_lb_controller" {
   repository = aws_ecr_repository.amazon_lb_controller.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
@@ -443,6 +453,21 @@ resource "aws_ecr_repository_policy" "grafana_mimir_distributed_helm" {
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
 
+resource "aws_ecr_repository_policy" "grafana_loki" {
+  repository = aws_ecr_repository.grafana_loki.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "grafana_loki_canary" {
+  repository = aws_ecr_repository.grafana_loki_canary.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "grafana_loki_helm" {
+  repository = aws_ecr_repository.grafana_loki_helm.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
 resource "aws_ecr_repository_policy" "grafana_agent" {
   repository = aws_ecr_repository.grafana_agent.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
@@ -475,5 +500,10 @@ resource "aws_ecr_repository_policy" "cluster_autoscaler" {
 
 resource "aws_ecr_repository_policy" "rust" {
   repository = aws_ecr_repository.rust.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "kubectl" {
+  repository = aws_ecr_repository.kubectl.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
