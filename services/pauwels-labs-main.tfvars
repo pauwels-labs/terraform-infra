@@ -1,7 +1,27 @@
 services                  = [
   {
     "name"            = "homepage",
-    "template_name"   = "rust-warp",
+    "template_name"   = "",
+    "repository_host" = "github"
+  },
+  {
+    "name"            = "redact-store",
+    "template_name"   = "",
+    "repository_host" = "github"
+  },
+  {
+    "name"            = "redact-feed-api",
+    "template_name"   = "",
+    "repository_host" = "github"
+  },
+  {
+    "name"            = "redact-feed-ui",
+    "template_name"   = "",
+    "repository_host" = "github"
+  },
+  {
+    "name"            = "redact-website",
+    "template_name"   = "",
     "repository_host" = "github"
   }
 ]

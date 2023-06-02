@@ -5,10 +5,13 @@ resource "github_repository" "this" {
   allow_squash_merge     = false
   delete_branch_on_merge = true
 
-  template {
-    owner                = var.org_name
-    repository           = var.template_name
-    include_all_branches = false
+  dynamic "template" {
+    for_each = length(var.template_name) == 0 ? toset([]) : toset([1])
+    content {
+      owner                = var.org_name
+      repository           = var.template_name
+      include_all_branches = false
+    }
   }
 }
 

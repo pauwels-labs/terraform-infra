@@ -1,12 +1,7 @@
 github_org_name  = "pauwels-labs"
 repository_names = [
   "flux-infra",
-  "team-main",
-  "homepage",
-  "redact-store",
-  "redact-feed-api",
-  "redact-feed-ui",
-  "protonmail-bridge-docker"
+  "team-main"
 ]
 deploy_keys = [
   {
