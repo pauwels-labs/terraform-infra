@@ -1,6 +1,7 @@
 resource "aws_ecr_repository" "this" {
   name                 = "t/${local.full_tenant_name}/${var.repository_host}/${var.org_name}/${var.repository_name}"
   image_tag_mutability = "MUTABLE"
+  force_delete         = true
   image_scanning_configuration {
     scan_on_push = false
   }
@@ -13,6 +14,7 @@ resource "aws_ecr_repository" "this" {
 resource "aws_ecr_repository" "this_cache" {
   name                 = "t/${local.full_tenant_name}/${var.repository_host}/${var.org_name}/${var.repository_name}/cache"
   image_tag_mutability = "MUTABLE"
+  force_delete         = true
   image_scanning_configuration {
     scan_on_push = false
   }

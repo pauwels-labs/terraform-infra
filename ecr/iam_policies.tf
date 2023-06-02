@@ -1,6 +1,6 @@
 data aws_iam_policy_document "pauwels_labs_ecr_policy" {
   statement {
-    sid     = "AllowWorkloadsSDLCEngineeringDevAccountsRWAccess"    
+    sid     = "AllowWorkloadsSDLCEngineeringDevAccountsRWAccess"
     effect  = "Allow"
     actions = [
       "ecr:GetDownloadUrlForLayer",
@@ -21,7 +21,7 @@ data aws_iam_policy_document "pauwels_labs_ecr_policy" {
   }
 
   statement {
-    sid     = "AllowDeploymentsProdEngineeringDeploymentsProdAccountsRWAccess"    
+    sid     = "AllowDeploymentsProdEngineeringDeploymentsProdAccountsRWAccess"
     effect  = "Allow"
     actions = [
       "ecr:GetDownloadUrlForLayer",

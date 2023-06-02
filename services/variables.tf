@@ -1,5 +1,30 @@
-variable "github_org_name" {
-  description = "Name of the GitHub organization to deploy the repository to"
+# variable "services_by_tenant" {
+#   description = "Service name, template name, and repository host for all the services to create, organized by tenant"
+#   type        = map(set(object({
+#     name            = string
+#     template_name   = string
+#     repository_host = string
+#   })))
+#   default     = {}
+# }
+
+variable "services" {
+  description = "Service name, template name, and repository host for all the services to create for the tenant in the org"
+  type        = set(object({
+    name            = string
+    template_name   = string
+    repository_host = string
+  }))
+  default     = []
+}
+
+variable "tenant_name" {
+  description = "Name of the tenant in the organization that the services belong to"
+  type        = string
+}
+
+variable "org_name" {
+  description = "Name of the organization in the repository host to create repositories in"
   type        = string
 }
 

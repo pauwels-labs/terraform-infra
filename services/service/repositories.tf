@@ -1,6 +1,6 @@
 resource "github_repository" "this" {
   name                   = var.repository_name
-  auto_init              = true
+  auto_init              = false
   allow_rebase_merge     = false
   allow_squash_merge     = false
   delete_branch_on_merge = true
