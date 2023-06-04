@@ -1,7 +1,6 @@
 github_org_name  = "pauwels-labs"
 repository_names = [
-  "flux-infra",
-  "team-main"
+  "flux-infra"
 ]
 deploy_keys = [
   {

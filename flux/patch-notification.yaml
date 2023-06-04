@@ -14,4 +14,4 @@ spec:
         - --log-encoding=json
         - --enable-leader-election
         name: manager
-        image: 274295908850.dkr.ecr.eu-west-1.amazonaws.com/fluxcd/notification-controller:v0.26.0
+        #image: 274295908850.dkr.ecr.eu-west-1.amazonaws.com/fluxcd/notification-controller:v0.26.0

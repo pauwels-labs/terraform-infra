@@ -27,7 +27,7 @@ resource "kubernetes_namespace" "flux_system_c0" {
 resource "kubernetes_manifest" "flux_install_content_c0" {
   provider = kubernetes.c0
   for_each = local.cluster_create[local.cluster_index[0]] ? {
-    for i, v in data.kubectl_file_documents.install_content[local.cluster_index[0]].documents : i => v if yamldecode(v).kind != "Namespace"
+    for i, v in data.kubectl_file_documents.install_content[local.cluster_index[0]].documents : i => v if yamldecode(v).kind != "Namespace" && yamldecode(v).kind != "ResourceQuota"
   } : {}
 
   manifest = {

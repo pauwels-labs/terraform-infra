@@ -16,4 +16,4 @@ spec:
         - --log-encoding=json
         - --enable-leader-election
         name: manager
-        image: 274295908850.dkr.ecr.eu-west-1.amazonaws.com/fluxcd/helm-controller:v0.24.0
+        #image: 274295908850.dkr.ecr.eu-west-1.amazonaws.com/fluxcd/helm-controller:v0.24.0

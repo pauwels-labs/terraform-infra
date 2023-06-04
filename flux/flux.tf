@@ -1,6 +1,7 @@
 data "flux_install" "this" {
   count = local.cluster_count
 
+  version          = "v2.0.0-rc.5"
   target_path      = "clusters/${local.cluster_names[count.index]}"
   network_policy   = false
   components_extra = [
