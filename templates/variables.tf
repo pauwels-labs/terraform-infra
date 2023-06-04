@@ -1,4 +1,4 @@
-variable "github_org_name" {
-  description = "Name of the GitHub organization to deploy the repository to"
+variable "org_name" {
+  description = "Name of the repository host organization to deploy the repository to"
   type        = string
 }

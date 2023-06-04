@@ -1,6 +1,13 @@
 module "rust_warp" {
   source = "./template"
 
-  github_org_name = var.github_org_name
-  name            = "rust-warp"
+  org_name = var.org_name
+  name     = "rust-warp"
+}
+
+module "tenant" {
+  source = "./template"
+
+  org_name = var.org_name
+  name     = "tenant"
 }

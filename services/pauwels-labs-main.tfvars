@@ -2,27 +2,30 @@ services                  = [
   {
     "name"            = "homepage",
     "template_name"   = "",
-    "repository_host" = "github"
+    "repository_host" = "github",
   },
   {
-    "name"            = "redact-store",
-    "template_name"   = "",
-    "repository_host" = "github"
+    "name"                  = "redact-store",
+    "template_name"         = "",
+    "repository_host"       = "github",
+    "repository_visibility" = "public"
   },
   {
-    "name"            = "redact-feed-api",
-    "template_name"   = "",
-    "repository_host" = "github"
+    "name"                  = "redact-feed-api",
+    "template_name"         = "",
+    "repository_host"       = "github",
+    "repository_visibility" = "public"
   },
   {
-    "name"            = "redact-feed-ui",
-    "template_name"   = "",
-    "repository_host" = "github"
+    "name"                  = "redact-feed-ui",
+    "template_name"         = "",
+    "repository_host"       = "github",
+    "repository_visibility" = "public"
   },
   {
     "name"            = "redact-website",
     "template_name"   = "",
-    "repository_host" = "github"
+    "repository_host" = "github",
   }
 ]
 org_name                  = "pauwels-labs"

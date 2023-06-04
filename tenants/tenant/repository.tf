@@ -1,26 +1,23 @@
 resource "github_repository" "this" {
-  name                   = var.repository_name
+  name                   = "tenant-${var.tenant_name}"
   auto_init              = false
   allow_rebase_merge     = false
   allow_squash_merge     = false
   delete_branch_on_merge = true
-  visibility             = var.repository_visibility
+  visibility             = var.tenant_repository_visibility
 
-  dynamic "template" {
-    for_each = length(var.template_name) == 0 ? toset([]) : toset([1])
-    content {
-      owner                = var.org_name
-      repository           = var.template_name
-      include_all_branches = false
-    }
+  template {
+    owner                = var.org_name
+    repository           = "template-tenant"
+    include_all_branches = false
   }
 
   security_and_analysis {
     secret_scanning {
-      status = var.repository_visibility == "public" ? "enabled" : "disabled"
+      status = var.tenant_repository_visibility == "public" ? "enabled" : "disabled"
     }
     secret_scanning_push_protection {
-      status = var.repository_visibility == "public" ? "enabled" : "disabled"
+      status = var.tenant_repository_visibility == "public" ? "enabled" : "disabled"
     }
   }
 }
@@ -28,20 +25,6 @@ resource "github_repository" "this" {
 resource "github_branch_default" "this" {
   repository = github_repository.this.name
   branch     = "main"
-}
-
-resource "github_repository_webhook" "ci" {
-  repository = github_repository.this.name
-  active     = true
-  events     = [
-    "push"
-  ]
-
-  configuration {
-    url          = local.ci_webhook_url
-    content_type = "json"
-    secret       = data.vault_kv_secret_v2.hmac.data.token
-  }
 }
 
 resource "tls_private_key" "this" {

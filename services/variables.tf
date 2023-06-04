@@ -1,19 +1,10 @@
-# variable "services_by_tenant" {
-#   description = "Service name, template name, and repository host for all the services to create, organized by tenant"
-#   type        = map(set(object({
-#     name            = string
-#     template_name   = string
-#     repository_host = string
-#   })))
-#   default     = {}
-# }
-
 variable "services" {
   description = "Service name, template name, and repository host for all the services to create for the tenant in the org"
   type        = set(object({
-    name            = string
-    template_name   = string
-    repository_host = string
+    name                  = string
+    template_name         = string
+    repository_host       = string
+    repository_visibility = optional(string)
   }))
   default     = []
 }

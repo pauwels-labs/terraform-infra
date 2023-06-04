@@ -19,6 +19,12 @@ variable "repository_name" {
   type        = string
 }
 
+variable "repository_visibility" {
+  description = "Set to \"public\" to make the service repository public"
+  type        = string
+  default     = "private"
+}
+
 variable "template_name" {
   description = "Name of the template to inherit from"
   type        = string

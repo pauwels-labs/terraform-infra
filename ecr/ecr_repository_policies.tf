@@ -1,33 +1,3 @@
-resource "aws_ecr_repository_policy" "pauwels_labs_redact_store" {
-  repository = aws_ecr_repository.pauwels_labs_redact_store.name
-  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
-}
-
-resource "aws_ecr_repository_policy" "pauwels_labs_redact_store_cache" {
-  repository = aws_ecr_repository.pauwels_labs_redact_store_cache.name
-  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
-}
-
-resource "aws_ecr_repository_policy" "pauwels_labs_homepage" {
-  repository = aws_ecr_repository.pauwels_labs_homepage.name
-  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
-}
-
-resource "aws_ecr_repository_policy" "pauwels_labs_homepage_cache" {
-  repository = aws_ecr_repository.pauwels_labs_homepage_cache.name
-  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
-}
-
-resource "aws_ecr_repository_policy" "pauwels_labs_redact_website" {
-  repository = aws_ecr_repository.pauwels_labs_redact_website.name
-  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
-}
-
-resource "aws_ecr_repository_policy" "pauwels_labs_redact_website_cache" {
-  repository = aws_ecr_repository.pauwels_labs_redact_website_cache.name
-  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
-}
-
 resource "aws_ecr_repository_policy" "pauwels_labs_redact_client" {
   repository = aws_ecr_repository.pauwels_labs_redact_client.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
@@ -43,16 +13,6 @@ resource "aws_ecr_repository_policy" "pauwels_labs_redact_crypto_cache" {
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
 
-resource "aws_ecr_repository_policy" "pauwels_labs_redact_data" {
-  repository = aws_ecr_repository.pauwels_labs_redact_data.name
-  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
-}
-
-resource "aws_ecr_repository_policy" "pauwels_labs_redact_data_cache" {
-  repository = aws_ecr_repository.pauwels_labs_redact_data_cache.name
-  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
-}
-
 resource "aws_ecr_repository_policy" "pauwels_labs_toml_editor" {
   repository = aws_ecr_repository.pauwels_labs_toml_editor.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
@@ -60,26 +20,6 @@ resource "aws_ecr_repository_policy" "pauwels_labs_toml_editor" {
 
 resource "aws_ecr_repository_policy" "pauwels_labs_toml_editor_cache" {
   repository = aws_ecr_repository.pauwels_labs_toml_editor_cache.name
-  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
-}
-
-resource "aws_ecr_repository_policy" "pauwels_labs_redact_feed_ui" {
-  repository = aws_ecr_repository.pauwels_labs_redact_feed_ui.name
-  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
-}
-
-resource "aws_ecr_repository_policy" "pauwels_labs_redact_feed_ui_cache" {
-  repository = aws_ecr_repository.pauwels_labs_redact_feed_ui_cache.name
-  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
-}
-
-resource "aws_ecr_repository_policy" "pauwels_labs_redact_feed_api" {
-  repository = aws_ecr_repository.pauwels_labs_redact_feed_api.name
-  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
-}
-
-resource "aws_ecr_repository_policy" "pauwels_labs_redact_feed_api_cache" {
-  repository = aws_ecr_repository.pauwels_labs_redact_feed_api_cache.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
 

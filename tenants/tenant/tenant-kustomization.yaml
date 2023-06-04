@@ -1,0 +1,28 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: TF_REPLACE_TENANT_NAME
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  serviceAccountName: kustomize-controller
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./tenant/base
+  targetNamespace: "${tenantnamespaceprefix}TF_REPLACE_TENANT_NAME"
+  prune: true
+  wait: true
+  timeout: 30s
+  postBuild:
+    substitute:
+      tenantname: "TF_REPLACE_TENANT_NAME"
+      tenantrepohost: "TF_REPLACE_REPOSITORY_HOST"
+      tenantrepoorg: "TF_REPLACE_ORG_NAME"
+      tenantreponame: "TF_REPLACE_TENANT_REPOSITORY_NAME"
+      tenantrepourl: "TF_REPLACE_REPOSITORY_URL"
+      tenantrepopath: "base"
+      tenantrepobot: "TF_REPLACE_REPOSITORY_BOT_NAME"
+    substituteFrom:
+    - kind: ConfigMap
+      name: external-config-data

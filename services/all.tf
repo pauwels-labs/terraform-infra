@@ -6,6 +6,7 @@ module "services" {
   tenant_name                      = var.tenant_name
   repository_host                  = each.value.repository_host
   repository_name                  = each.key
+  repository_visibility            = each.value.repository_visibility == null ? "private" : each.value.repository_visibility
   template_name                    = length(each.value.template_name) == 0 ? "" : "template-${each.value.template_name}"
 
   container_registry_domain        = var.container_registry_domain
