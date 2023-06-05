@@ -230,6 +230,22 @@ resource "aws_ecr_repository" "fluxcd_source_controller" {
   }
 }
 
+resource "aws_ecr_repository" "fluxcd_image_automation_controller" {
+  name                 = "fluxcd/image-automation-controller"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "fluxcd_image_reflector_controller" {
+  name                 = "fluxcd/image-reflector-controller"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
 resource "aws_ecr_repository" "amazon_aws_cli" {
   name                 = "amazon/aws-cli"
   image_tag_mutability = "MUTABLE"

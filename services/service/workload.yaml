@@ -1,4 +1,4 @@
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: TF_REPLACE_NAME
@@ -30,7 +30,7 @@ spec:
     - kind: ConfigMap
       name: external-tenant-data
 ---
-apiVersion: source.toolkit.fluxcd.io/v1beta2
+apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
   name: TF_REPLACE_REPOSITORY_HOST-TF_REPLACE_ORG_NAME-TF_REPLACE_NAME

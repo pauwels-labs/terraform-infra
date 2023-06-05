@@ -1,5 +1,5 @@
 resource "github_repository_file" "kustomization_workload" {
-  repository          = "team-${var.tenant_name}"
+  repository          = "tenant-${var.tenant_name}"
   file                = "workload/kustomization.yaml"
   content             = yamlencode(local.kustomization_workload_yaml)
   branch              = "main"
@@ -8,7 +8,7 @@ resource "github_repository_file" "kustomization_workload" {
 }
 
 resource "github_repository_file" "kustomization_infra" {
-  repository          = "team-${var.tenant_name}"
+  repository          = "tenant-${var.tenant_name}"
   file                = "infra/kustomization.yaml"
   content             = yamlencode(local.kustomization_infra_yaml)
   branch              = "main"

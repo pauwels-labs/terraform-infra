@@ -31,12 +31,27 @@ terraform {
   }
 }
 
-provider "flux" {}
+provider "flux" {
+  kubernetes = {
+    config_path = "~/.kube/config"
+  }
+  git = {
+    url   = "https://${var.repository_host_domain}/${var.org_name}/${var.repository_name}.git"
+    http  = {
+      username = "capt-haddock"
+      password = "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"
+    }
+    # ssh = {
+    #   username    = "git"
+    #   private_key = tls_private_key.cd.private_key_pem
+    # }
+  }
+}
 
 provider "kubectl" {}
 
 provider "github" {
-  owner = var.github_org_name
+  owner = var.org_name
 }
 
 data "terraform_remote_state" "eks" {

@@ -1,1 +1,1 @@
-github_org_name = "pauwels-labs"
+org_name = "pauwels-labs"

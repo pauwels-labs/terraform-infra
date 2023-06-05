@@ -1,5 +1,5 @@
 resource "github_repository_file" "workload" {
-  repository     = "team-main"
+  repository     = "tenant-${var.tenant_name}"
   file           = "workload/${var.repository_name}.yaml"
   content        = replace(local.workload_file_replaced, "TF_REPLACE_ENV_SUFFIX", var.enable_vault_config_env_suffixes ? "-dev" : "")
   branch         = "main"
@@ -13,7 +13,7 @@ resource "github_repository_file" "workload" {
 }
 
 resource "github_repository_file" "externalsecret_ssh_cd" {
-  repository     = "team-main"
+  repository     = "tenant-${var.tenant_name}"
   file           = "workload/externalsecret-ssh-${local.full_tenant_name}-${var.repository_host}-${var.org_name}-${var.repository_name}.yaml"
   content        = local.externalsecret_ssh_cd_file_replaced
   branch         = "main"
@@ -21,7 +21,7 @@ resource "github_repository_file" "externalsecret_ssh_cd" {
 }
 
 resource "github_repository_file" "externalsecret_ssh_ci" {
-  repository     = "team-main"
+  repository     = "tenant-${var.tenant_name}"
   file           = "infra/externalsecret-ssh-${local.full_tenant_name}-${var.repository_host}-${var.org_name}-${var.repository_name}.yaml"
   content        = local.externalsecret_ssh_ci_file_replaced
   branch         = "main"

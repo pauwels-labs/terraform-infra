@@ -133,6 +133,16 @@ resource "aws_ecr_repository_policy" "fluxcd_source_controller" {
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
 
+resource "aws_ecr_repository_policy" "fluxcd_image_automation_controller" {
+  repository = aws_ecr_repository.fluxcd_image_automation_controller.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "fluxcd_image_reflector_controller" {
+  repository = aws_ecr_repository.fluxcd_image_reflector_controller.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
 resource "aws_ecr_repository_policy" "amazon_aws_cli" {
   repository = aws_ecr_repository.amazon_aws_cli.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
