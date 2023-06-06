@@ -11,3 +11,10 @@ module "tenant" {
   org_name = var.org_name
   name     = "tenant"
 }
+
+module "nodejs_express" {
+  source = "./template"
+
+  org_name = var.org_name
+  name     = "nodejs-express"
+}
