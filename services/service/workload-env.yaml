@@ -1,0 +1,121 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: TF_REPLACE_NAMETF_REPLACE_ENV_SUFFIX
+  namespace: "${tenantnamespaceprefix}TF_REPLACE_TENANT_NAME"
+spec:
+  interval: 1m0s
+  serviceAccountName: TF_REPLACE_TENANT_NAME
+  targetNamespace: "${tenantnamespaceprefix}TF_REPLACE_TENANT_NAME"
+  sourceRef:
+    kind: GitRepository
+    name: TF_REPLACE_REPO_HOST_NAME-TF_REPLACE_ORG_NAME-TF_REPLACE_NAMETF_REPLACE_ENV_SUFFIX
+  images:
+  - name: appimage
+    newName: TF_REPLACE_CONTAINER_REGISTRY_DOMAIN/t/TF_REPLACE_TENANT_NAME/TF_REPLACE_REPO_HOST_NAME/TF_REPLACE_ORG_NAME/TF_REPLACE_NAME # {"$imagepolicy": "t-TF_REPLACE_TENANT_NAME:TF_REPLACE_NAMETF_REPLACE_ENV_SUFFIX:name"}
+    newTag: v0.0.1 # {"$imagepolicy": "t-TF_REPLACE_TENANT_NAME:TF_REPLACE_NAMETF_REPLACE_ENV_SUFFIX:tag"}
+  path: ./deploy/TF_REPLACE_ENV_NAME
+  prune: true
+  wait: true
+  timeout: 30s
+  postBuild:
+    substitute:
+      name: "TF_REPLACE_NAME"
+      namesuffix: "TF_REPLACE_ENV_SUFFIX"
+      domain: "TF_REPLACE_DOMAIN"
+      tenantname: "TF_REPLACE_TENANT_NAME"
+      version: v0.0.1 # {"$imagepolicy": "t-TF_REPLACE_TENANT_NAME:TF_REPLACE_NAMETF_REPLACE_ENV_SUFFIX:tag"}
+    substituteFrom:
+    - kind: ConfigMap
+      name: external-infra-data
+    - kind: ConfigMap
+      name: external-tenant-data
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: TF_REPLACE_NAMETF_REPLACE_ENV_SUFFIX
+  namespace: "${tenantnamespaceprefix}TF_REPLACE_TENANT_NAME"
+  labels:
+    toolkit.fluxcd.io/tenant: TF_REPLACE_TENANT_NAME
+spec:
+  imageRepositoryRef:
+    name: TF_REPLACE_NAMETF_REPLACE_ENV_SUFFIX
+  policy:
+    semver:
+      range: "TF_REPLACE_SEMVER_RANGE"
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: TF_REPLACE_REPO_HOST_NAME-TF_REPLACE_ORG_NAME-TF_REPLACE_NAMETF_REPLACE_ENV_SUFFIX
+  namespace: "${tenantnamespaceprefix}TF_REPLACE_TENANT_NAME"
+  labels:
+    toolkit.fluxcd.io/tenant: TF_REPLACE_TENANT_NAME
+spec:
+  interval: 1m
+  ref:
+    branch: main
+  secretRef:
+    name: ssh-TF_REPLACE_TENANT_NAME-TF_REPLACE_REPO_HOST_NAME-TF_REPLACE_ORG_NAME-TF_REPLACE_NAMETF_REPLACE_ENV_SUFFIX
+  url: ssh://git@github.com/TF_REPLACE_ORG_NAME/TF_REPLACE_NAME
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: TF_REPLACE_NAMETF_REPLACE_ENV_SUFFIX
+  namespace: "${tenantnamespaceprefix}TF_REPLACE_TENANT_NAME"
+  labels:
+    toolkit.fluxcd.io/tenant: TF_REPLACE_TENANT_NAME
+spec:
+  image: TF_REPLACE_CONTAINER_REGISTRY_DOMAIN/t/TF_REPLACE_TENANT_NAME/TF_REPLACE_REPO_HOST_NAME/TF_REPLACE_ORG_NAME/TF_REPLACE_NAME
+  interval: 1m0s
+  secretRef:
+    name: ecr-credentials
+---
+apiVersion: notification.toolkit.fluxcd.io/v1
+kind: Receiver
+metadata:
+  name: TF_REPLACE_REPO_HOST_NAME-TF_REPLACE_ORG_NAME-TF_REPLACE_NAMETF_REPLACE_ENV_SUFFIX
+  labels:
+    toolkit.fluxcd.io/tenant: "TF_REPLACE_TENANT_NAME"
+spec:
+  events:
+  - "ping"
+  - "push"
+  interval: "10m"
+  resources:
+  - kind: "GitRepository"
+    name: TF_REPLACE_REPO_HOST_NAME-TF_REPLACE_ORG_NAME-TF_REPLACE_NAMETF_REPLACE_ENV_SUFFIX
+  secretRef:
+    name: webhook-hmac-TF_REPLACE_TENANT_NAME-TF_REPLACE_HMAC_TOKEN_NAME
+  type: TF_REPLACE_REPO_HOST_NAME
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: ssh-${tenantname}-TF_REPLACE_REPO_HOST_NAME-TF_REPLACE_ORG_NAME-TF_REPLACE_NAMETF_REPLACE_ENV_SUFFIX
+  labels:
+    toolkit.fluxcd.io/tenant: ${tenantname}
+spec:
+  refreshInterval: "15s"
+  secretStoreRef:
+    name: tenant-repositories-ssh
+    kind: SecretStore
+  target:
+    name: ssh-${tenantname}-TF_REPLACE_REPO_HOST_NAME-TF_REPLACE_ORG_NAME-TF_REPLACE_NAMETF_REPLACE_ENV_SUFFIX
+    deletionPolicy: "Delete"
+    template:
+      metadata:
+        labels:
+          toolkit.fluxcd.io/tenant: ${tenantname}
+  data:
+  - secretKey: identity
+    remoteRef:
+      key: tenants/${tenantnamespaceprefix}${tenantname}/repositories/TF_REPLACE_REPO_HOST_NAME/TF_REPLACE_ORG_NAME/TF_REPLACE_NAME/ssh/cd
+      property: identity
+  - secretKey: known_hosts
+    remoteRef:
+      key: tenants/${tenantnamespaceprefix}${tenantname}/repositories/TF_REPLACE_REPO_HOST_NAME/TF_REPLACE_ORG_NAME/TF_REPLACE_NAME/ssh/cd
+      property: known_hosts

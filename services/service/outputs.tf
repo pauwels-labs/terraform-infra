@@ -1,5 +1,5 @@
-output "repository_name" {
-  value = var.repository_name
+output "service_name" {
+  value = var.service_name
 }
 
 output "deploy_public_key_openssh" {

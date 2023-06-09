@@ -1,5 +1,5 @@
 resource "aws_ecr_repository" "this" {
-  name                 = "t/${local.full_tenant_name}/${var.repository_host}/${var.org_name}/${var.repository_name}"
+  name                 = "t/${var.tenant_name}/${local.service_repo_host_name}/${var.service_repo_org_name}/${var.service_name}"
   image_tag_mutability = "MUTABLE"
   force_delete         = true
   image_scanning_configuration {
@@ -7,12 +7,12 @@ resource "aws_ecr_repository" "this" {
   }
 
   tags = {
-    TenantName = local.full_tenant_name
+    TenantName = var.tenant_name
   }
 }
 
 resource "aws_ecr_repository" "this_cache" {
-  name                 = "t/${local.full_tenant_name}/${var.repository_host}/${var.org_name}/${var.repository_name}/cache"
+  name                 = "t/${var.tenant_name}/${local.service_repo_host_name}/${var.service_repo_org_name}/${var.service_name}/cache"
   image_tag_mutability = "MUTABLE"
   force_delete         = true
   image_scanning_configuration {
@@ -20,7 +20,7 @@ resource "aws_ecr_repository" "this_cache" {
   }
 
   tags = {
-    TenantName = local.full_tenant_name
+    TenantName = var.tenant_name
   }
 }
 

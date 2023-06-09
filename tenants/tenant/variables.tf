@@ -1,10 +1,15 @@
 variable "org_name" {
-  description = "Name of the organization owning the repository"
+  description = "Name of the organization owning the tenant"
+  type        = string
+}
+
+variable "org_domain" {
+  description = "Base domain of the organization owning the tenant"
   type        = string
 }
 
 variable "tenant_name" {
-  description = "Name of the tenant that will own the service"
+  description = "Name of the tenant"
   type        = string
 }
 
@@ -13,10 +18,28 @@ variable "tenant_chunk" {
   type        = number
 }
 
-variable "tenant_repository_visibility" {
-  description = "Set to \"public\" to make the tenant repository public"
+variable "tenant_domain" {
+  description = "Domain specific to the tenant, where its services will be served"
   type        = string
-  default     = "private"
+}
+
+variable "tenant_envs" {
+  description = "Environments the tenant should support. Includes an optional domain override to override domain on a per-env basis."
+  type        = list(object({
+    name   = string,
+    domain = optional(string)
+  }))
+  default     = [
+    {
+      name   = "dev"
+    },
+    {
+      name   = "staging"
+    },
+    {
+      name   = "prod"
+    }
+  ]
 }
 
 variable "additional_hmac_tokens" {
@@ -30,26 +53,37 @@ variable "vault_address" {
   type        = string
 }
 
-variable "repository_bot_host" {
-  description = "Repository host that the bot is a part of (e.g. github)"
+variable "tenant_repo_domain" {
+  description = "Domain of the repository host, e.g. github.com"
   type        = string
-  default     = "github"
+  default     = "github.com"
 
   validation {
-    condition     = var.repository_bot_host == "github"
-    error_message = "The only supported repository host is currently github"
+    condition     = var.tenant_repo_domain == "github.com"
+    error_message = "The only supported repository host is currently github.com"
   }
 }
 
-variable "repository_bot_name" {
-  description = "Name of the repository bot"
+variable "tenant_repo_org_name" {
+  description = "Name of the tenant's organization in the repository host"
   type        = string
 }
 
-variable "repository_bot_token" {
-  description = "Personal access token for the GitHub bot that will be used by the tenant to manage CI operations"
+variable "tenant_repo_bot_name" {
+  description = "Name of the tenant's repository bot"
+  type        = string
+}
+
+variable "tenant_repo_bot_token" {
+  description = "Personal access token for the bot that will be used by the tenant to manage CI operations"
   type        = string
   sensitive   = true
+}
+
+variable "tenant_repo_visibility" {
+  description = "Set to \"public\" to make the tenant repository public"
+  type        = string
+  default     = "private"
 }
 
 variable "additional_deploy_keys" {

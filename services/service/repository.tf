@@ -1,26 +1,17 @@
 resource "github_repository" "this" {
-  name                   = var.repository_name
+  name                   = var.service_name
   auto_init              = false
   allow_rebase_merge     = false
   allow_squash_merge     = false
   delete_branch_on_merge = true
-  visibility             = var.repository_visibility
+  visibility             = var.service_repo_visibility
 
   dynamic "template" {
     for_each = length(var.template_name) == 0 ? toset([]) : toset([1])
     content {
-      owner                = var.org_name
-      repository           = var.template_name
+      owner                = var.service_repo_org_name
+      repository           = "template-${var.template_name}"
       include_all_branches = false
-    }
-  }
-
-  security_and_analysis {
-    secret_scanning {
-      status = var.repository_visibility == "public" ? "enabled" : "disabled"
-    }
-    secret_scanning_push_protection {
-      status = var.repository_visibility == "public" ? "enabled" : "disabled"
     }
   }
 }
@@ -38,7 +29,24 @@ resource "github_repository_webhook" "ci" {
   ]
 
   configuration {
-    url          = local.ci_webhook_url
+    url          = "https://webhook.ci.${var.org_domain}/${var.tenant_name}"
+    content_type = "json"
+    secret       = data.vault_kv_secret_v2.hmac.data.token
+  }
+}
+
+resource "github_repository_webhook" "cd" {
+  for_each = local.env_map
+
+  repository = github_repository.this.name
+  active     = true
+  events     = [
+    "ping",
+    "push"
+  ]
+
+  configuration {
+    url          = "https://webhook.cd.${each.key}.${var.org_domain}/hook/${sha256("${data.vault_kv_secret_v2.hmac.data.token}${local.service_repo_host_name}-${var.service_repo_org_name}-${var.service_name}${local.collapse_envs ? "-${each.key}" : ""}t-${var.tenant_name}")}"
     content_type = "json"
     secret       = data.vault_kv_secret_v2.hmac.data.token
   }
@@ -58,18 +66,4 @@ resource "github_repository_deploy_key" "this" {
   repository = github_repository.this.name
   key        = tls_private_key.this[count.index].public_key_openssh
   read_only  = !local.deploy_keys[count.index].rw
-}
-
-resource "local_file" "deploy_private_key_openssh" {
-  count = local.key_count
-
-  content  = tls_private_key.this[count.index].private_key_openssh
-  filename = "${path.root}/deploy_private_key_${github_repository.this.name}_${local.deploy_keys[count.index].name}.openssh"
-}
-
-resource "local_file" "deploy_private_key_pem" {
-  count = local.key_count
-
-  content  = tls_private_key.this[count.index].private_key_pem
-  filename = "${path.root}/deploy_private_key_${github_repository.this.name}_${local.deploy_keys[count.index].name}.pem"
 }

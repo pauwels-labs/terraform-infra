@@ -10,8 +10,8 @@ module "tenant_kustomization_yaml" {
 
 resource "github_repository_file" "tenant_kustomization" {
   repository     = "flux-infra"
-  file           = "tenants/base/chunks/${var.tenant_chunk}/${local.full_tenant_name}.yaml"
+  file           = "tenants/base/chunks/${var.tenant_chunk}/${var.tenant_name}.yaml"
   content        = yamlencode(module.tenant_kustomization_yaml.merged)
   branch         = "main"
-  commit_message = "feat: adds or removes ${local.full_tenant_name} Kustomization in tenants/base (Terraform)"
+  commit_message = "feat: adds or removes ${var.tenant_name} Kustomization in tenants/base (Terraform)"
 }

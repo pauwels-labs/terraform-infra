@@ -2,7 +2,7 @@ data "aws_rds_engine_version" "postgresql" {
   provider = aws.databases
 
   engine  = "aurora-postgresql"
-  version = "14.3"
+  version = "14.5"
 }
 
 resource "aws_db_subnet_group" "private" {

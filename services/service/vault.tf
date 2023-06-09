@@ -1,6 +1,6 @@
 resource "vault_kv_secret_v2" "repository_ssh_cd" {
   mount               = "secrets"
-  name                = "tenants/t-${local.full_tenant_name}/repositories/${var.repository_host}/${var.org_name}/${var.repository_name}/ssh/cd"
+  name                = "tenants/t-${var.tenant_name}/repositories/${local.service_repo_host_name}/${var.service_repo_org_name}/${var.service_name}/ssh/cd"
   delete_all_versions = true
   data_json           = jsonencode(
     {
@@ -13,7 +13,7 @@ resource "vault_kv_secret_v2" "repository_ssh_cd" {
 
 resource "vault_kv_secret_v2" "repository_ssh_ci" {
   mount               = "secrets"
-  name                = "tenants/t-${local.full_tenant_name}/repositories/${var.repository_host}/${var.org_name}/${var.repository_name}/ssh/ci"
+  name                = "tenants/t-${var.tenant_name}/repositories/${local.service_repo_host_name}/${var.service_repo_org_name}/${var.service_name}/ssh/ci"
   delete_all_versions = true
   data_json           = jsonencode(
     {
@@ -25,10 +25,10 @@ resource "vault_kv_secret_v2" "repository_ssh_ci" {
 }
 
 resource "vault_kv_secret_v2" "config" {
-  count               = var.enable_vault_config_env_suffixes ? 2 * length(local.environments) : 1 + length(local.environments)
+  count               = local.collapse_envs ? 2 * length(var.service_envs) : 1 + length(var.service_envs)
 
   mount               = "secrets"
-  name                = "tenants/t-${local.full_tenant_name}/configs/${count.index < local.base_config_count ? "base" : local.environments[count.index - local.base_config_count]}/${var.repository_name}${var.enable_vault_config_env_suffixes ? "-${local.environments[count.index % length(local.environments)]}" : ""}/config"
+  name                = "tenants/t-${var.tenant_name}/configs/${count.index < local.base_config_count ? "base" : var.service_envs[count.index - local.base_config_count].name}/${var.service_name}${local.collapse_envs ? "-${var.service_envs[count.index % length(var.service_envs)].name}" : ""}/config"
   delete_all_versions = true
   data_json           = jsonencode(
     {
@@ -44,10 +44,10 @@ resource "vault_kv_secret_v2" "config" {
 }
 
 resource "vault_kv_secret_v2" "env" {
-  count               = var.enable_vault_config_env_suffixes ? 2 * length(local.environments) : 1 + length(local.environments)
+  count               = local.collapse_envs ? 2 * length(var.service_envs) : 1 + length(var.service_envs)
 
   mount               = "secrets"
-  name                = "tenants/t-${local.full_tenant_name}/configs/${count.index < local.base_config_count ? "base" : local.environments[count.index - local.base_config_count]}/${var.repository_name}${var.enable_vault_config_env_suffixes ? "-${local.environments[count.index % length(local.environments)]}" : ""}/env"
+  name                = "tenants/t-${var.tenant_name}/configs/${count.index < local.base_config_count ? "base" : var.service_envs[count.index - local.base_config_count].name}/${var.service_name}${local.collapse_envs ? "-${var.service_envs[count.index % length(var.service_envs)].name}" : ""}/env"
   delete_all_versions = true
   data_json           = jsonencode(
     {
@@ -64,5 +64,5 @@ resource "vault_kv_secret_v2" "env" {
 
 data "vault_kv_secret_v2" "hmac" {
   mount = "secrets"
-  name  = "tenants/t-${local.full_tenant_name}/webhooks/${var.hmac_token_name}/hmac"
+  name  = "tenants/t-${var.tenant_name}/webhooks/${var.hmac_token_name}/hmac"
 }

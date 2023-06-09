@@ -1,11 +1,5 @@
-variable "repository_host" {
-  description = "The Git repository host, e.g. GitHub"
-  type        = string
-  default     = "github"
-}
-
-variable "org_name" {
-  description = "Name of the organization owning the repository"
+variable "org_domain" {
+  description = "Base domain of the organization that's hosting the tenant"
   type        = string
 }
 
@@ -14,20 +8,74 @@ variable "tenant_name" {
   type        = string
 }
 
-variable "repository_name" {
+variable "service_name" {
   description = "Name of the service to create"
   type        = string
 }
 
-variable "repository_visibility" {
+variable "service_repo_domain" {
+  description = "Domain of the repository host (e.g. github.com)"
+  type        = string
+  default     = "github.com"
+
+  validation {
+    condition     = var.service_repo_domain == "github.com"
+    error_message = "The only supported repository host is currently \"github.com\""
+  }
+}
+
+variable "service_repo_org_name" {
+  description = "Name of the service's organization in the repository host"
+  type        = string
+}
+
+variable "service_repo_visibility" {
   description = "Set to \"public\" to make the service repository public"
   type        = string
   default     = "private"
+  nullable    = false
+}
+
+variable "service_domain" {
+  description = "If the service will listen on a domain different than the default one for the tenant, specify it here"
+  type        = string
+  default     = ""
+  nullable    = false
+}
+
+variable "service_semver_range" {
+  description = "Acceptable semver range that the service may be in, e.g. >=0.0.0 <1.0.0"
+  type        = string
+  default     = ">=0.0.0 <1.0.0"
+  nullable    = false
+}
+
+variable "service_envs" {
+  description = "Environments the service should support. Includes an optional domain override to override domain on a per-env basis."
+  type        = list(object({
+    name         = string,
+    domain       = optional(string),
+    semver_range = optional(string)
+  }))
+  default     = [
+    {
+      name   = "dev"
+    },
+    {
+      name   = "staging"
+    },
+    {
+      name   = "prod"
+    }
+  ]
+  nullable    = false
 }
 
 variable "template_name" {
   description = "Name of the template to inherit from"
   type        = string
+  default     = ""
+  nullable    = false
 }
 
 variable "additional_deploy_keys" {
@@ -47,19 +95,15 @@ github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAA
 EOT
 }
 
-variable "enable_vault_config_env_suffixes" {
-  description = "This is used to enable having multiple environments in a single cluster; the name of the env will be added as a suffix to the name of the app in the config path"
-  type        = bool
-  default     = false
+variable "collapse_envs_to" {
+  description = "If this is set to true, assume that all envs are stored in the specified environment cluster; this is useful when trying to save on costs and deployment separation is not critical, allowing you to have all environments in, for example, dev"
+  type        = string
+  nullable    = false
+  default     = ""
 }
 
 variable "container_registry_domain" {
   description = "The domain of the container registry where the service artifacts will be stored"
-  type        = string
-}
-
-variable "ci_webhook_domain" {
-  description = "The domain (without scheme or trailing slash) of the CI webhook"
   type        = string
 }
 

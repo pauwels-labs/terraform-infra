@@ -1,10 +1,21 @@
+variable "org_domain" {
+  description = "Base domain of the organization that's hosting the tenant"
+  type        = string
+}
+
 variable "services" {
-  description = "Service name, template name, and repository host for all the services to create for the tenant in the org"
+  description = "All the services to create for this tenant"
   type        = set(object({
-    name                  = string
-    template_name         = string
-    repository_host       = string
-    repository_visibility = optional(string)
+    name             = string
+    template_name    = optional(string)
+    repo_visibility  = optional(string)
+    domain           = optional(string)
+    semver_range     = optional(string)
+    envs             = optional(list(object({
+      name         = string,
+      domain       = optional(string)
+      semver_range = optional(string)
+    })))
   }))
   default     = []
 }
@@ -14,9 +25,47 @@ variable "tenant_name" {
   type        = string
 }
 
-variable "org_name" {
+variable "tenant_repo_domain" {
+  description = "Domain of the repository host (e.g. github.com)"
+  type        = string
+  default     = "github.com"
+
+  validation {
+    condition     = var.tenant_repo_domain == "github.com"
+    error_message = "The only supported repository host is currently \"github.com\""
+  }
+}
+
+variable "tenant_repo_org_name" {
   description = "Name of the organization in the repository host to create repositories in"
   type        = string
+}
+
+variable "tenant_collapse_envs_to" {
+  description = "If this is set to true, assume that all envs are stored in the specified environment cluster; this is useful when trying to save on costs and deployment separation is not critical, allowing you to have all environments in, for example, dev"
+  type        = string
+  nullable    = false
+  default     = ""
+}
+
+variable "tenant_envs" {
+  description = "Default environments the services should be deployed in. Includes an optional domain override to override domain on a per-env basis. These can be overriden for each individual service."
+  type        = list(object({
+    name         = string,
+    domain       = optional(string),
+    semver_range = optional(string)
+  }))
+  default     = [
+    {
+      name   = "dev"
+    },
+    {
+      name   = "staging"
+    },
+    {
+      name   = "prod"
+    }
+  ]
 }
 
 variable "vault_address" {
@@ -26,11 +75,6 @@ variable "vault_address" {
 
 variable "container_registry_domain" {
   description = "The domain (without scheme or trailing slash) of the container registry where the service artifacts will be stored"
-  type        = string
-}
-
-variable "ci_webhook_domain" {
-  description = "The domain (without scheme or trailing slash) of the CI webhook"
   type        = string
 }
 

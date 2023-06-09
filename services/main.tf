@@ -28,7 +28,7 @@ terraform {
 }
 
 provider "github" {
-  owner = var.org_name
+  owner = var.tenant_repo_org_name
 }
 
 provider "vault" {

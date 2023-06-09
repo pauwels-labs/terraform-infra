@@ -1,5 +1,4 @@
 locals {
-  full_tenant_name = "${var.org_name}-${var.tenant_name}"
   hmac_token_names = toset(concat(["primary"], tolist(var.additional_hmac_tokens)))
 
   key_count           = length(local.deploy_keys)
@@ -20,22 +19,27 @@ locals {
   ssh_clone_url_cleaned = replace(github_repository.this.ssh_clone_url, "/([^:]+):([^:]+)/", "$1/$2")
   tenant_kustomization_yaml_overrides = {
     "metadata" = {
-      "name" = local.full_tenant_name
+      "name" = var.tenant_name
     }
     "spec": {
-      "targetNamespace" = "$${tenantnamespaceprefix}${local.full_tenant_name}"
+      "targetNamespace" = "$${tenantnamespaceprefix}${var.tenant_name}"
       "postBuild" = {
         "substitute" = {
-          "tenantname"     = local.full_tenant_name,
-          "tenantrepohost" = var.repository_bot_host
-          "tenantrepoorg"  = var.org_name
+          "tenantname"     = var.tenant_name,
+          "tenantrepohost" = local.tenant_repo_host_name
+          "tenantrepoorg"  = var.tenant_repo_org_name
           "tenantreponame" = github_repository.this.name
           "tenantrepourl"  = "ssh://${local.ssh_clone_url_cleaned}"
           "tenantrepopath" = "base"
-          "tenantrepobot"  = var.repository_bot_name
+          "tenantrepobot"  = var.tenant_repo_bot_name
         }
       }      
     }
   }
   tenant_kustomization_yaml = yamldecode(file("${path.module}/tenant-kustomization.yaml"))
+
+  env_map = merge({
+    "infra" = { name = "infra" }
+  }, {for env in var.tenant_envs : env.name => env})
+  tenant_repo_host_name = replace(var.tenant_repo_domain, "/([^\\.]+)\\.([^\\.]+)$/", "$1")
 }

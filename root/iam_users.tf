@@ -103,6 +103,5 @@ resource "aws_iam_user_group_membership" "dzcostaneto" {
 resource "aws_iam_user_group_membership" "kapdin" {
   user = aws_iam_user.kapdin.name
 
-  groups = [
-  ]
+  groups = []
 }

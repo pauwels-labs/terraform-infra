@@ -4,21 +4,12 @@ resource "github_repository" "this" {
   allow_rebase_merge     = false
   allow_squash_merge     = false
   delete_branch_on_merge = true
-  visibility             = var.tenant_repository_visibility
+  visibility             = var.tenant_repo_visibility
 
   template {
     owner                = var.org_name
     repository           = "template-tenant"
     include_all_branches = false
-  }
-
-  security_and_analysis {
-    secret_scanning {
-      status = var.tenant_repository_visibility == "public" ? "enabled" : "disabled"
-    }
-    secret_scanning_push_protection {
-      status = var.tenant_repository_visibility == "public" ? "enabled" : "disabled"
-    }
   }
 }
 
@@ -43,16 +34,19 @@ resource "github_repository_deploy_key" "this" {
   read_only  = !local.deploy_keys[count.index].rw
 }
 
-resource "local_file" "deploy_private_key_openssh" {
-  count = local.key_count
+resource "github_repository_webhook" "cd" {
+  for_each = local.env_map
 
-  content  = tls_private_key.this[count.index].private_key_openssh
-  filename = "${path.root}/deploy_private_key_${github_repository.this.name}_${local.deploy_keys[count.index].name}.openssh"
-}
+  repository = github_repository.this.name
+  active     = true
+  events     = [
+    "ping",
+    "push"
+  ]
 
-resource "local_file" "deploy_private_key_pem" {
-  count = local.key_count
-
-  content  = tls_private_key.this[count.index].private_key_pem
-  filename = "${path.root}/deploy_private_key_${github_repository.this.name}_${local.deploy_keys[count.index].name}.pem"
+  configuration {
+    url          = "https://webhook.cd.${each.key}.${var.org_domain}/hook/${sha256("${random_password.hmac_tokens["primary"].result}${local.tenant_repo_host_name}-${var.tenant_repo_org_name}-tenant-${var.tenant_name}t-${var.tenant_name}")}"
+    content_type = "json"
+    secret       = random_password.hmac_tokens["primary"].result
+  }
 }

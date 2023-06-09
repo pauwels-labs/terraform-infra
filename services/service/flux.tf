@@ -1,9 +1,11 @@
 resource "github_repository_file" "workload" {
+  for_each = local.env_map
+
   repository     = "tenant-${var.tenant_name}"
-  file           = "workload/${var.repository_name}.yaml"
-  content        = replace(local.workload_file_replaced, "TF_REPLACE_ENV_SUFFIX", var.enable_vault_config_env_suffixes ? "-dev" : "")
+  file           = "${local.collapse_envs ? var.collapse_envs_to : each.key}/${var.service_name}${local.collapse_envs ? "-${each.key}" : ""}.yaml"
+  content        = replace(replace(replace(replace(local.workload_env_file_replaced, "TF_REPLACE_ENV_SUFFIX", local.collapse_envs ? "-${each.key}" : ""), "TF_REPLACE_ENV_NAME", each.key), "TF_REPLACE_DOMAIN", each.value.domain), "TF_REPLACE_SEMVER_RANGE", each.value.semver_range)
   branch         = "main"
-  commit_message = "feat: adds or removes ${var.repository_name} Kustomization in workloads (Terraform)"
+  commit_message = "feat: modifies ${var.service_name} env-specific resources in /${each.key} (Terraform)"
 
   lifecycle {
     ignore_changes = [
@@ -12,18 +14,10 @@ resource "github_repository_file" "workload" {
   }
 }
 
-resource "github_repository_file" "externalsecret_ssh_cd" {
-  repository     = "tenant-${var.tenant_name}"
-  file           = "workload/externalsecret-ssh-${local.full_tenant_name}-${var.repository_host}-${var.org_name}-${var.repository_name}.yaml"
-  content        = local.externalsecret_ssh_cd_file_replaced
-  branch         = "main"
-  commit_message = "feat: adds or removes ${var.repository_name} CD key in workloads (Terraform)"
-}
-
 resource "github_repository_file" "externalsecret_ssh_ci" {
   repository     = "tenant-${var.tenant_name}"
-  file           = "infra/externalsecret-ssh-${local.full_tenant_name}-${var.repository_host}-${var.org_name}-${var.repository_name}.yaml"
+  file           = "infra/externalsecret-ssh-${var.tenant_name}-${local.service_repo_host_name}-${var.service_repo_org_name}-${var.service_name}.yaml"
   content        = local.externalsecret_ssh_ci_file_replaced
   branch         = "main"
-  commit_message = "feat: adds or removes ${var.repository_name} CI key in infra (Terraform)"
+  commit_message = "feat: adds or removes ${var.service_name} CI key in infra (Terraform)"
 }
