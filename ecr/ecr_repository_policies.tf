@@ -438,6 +438,41 @@ resource "aws_ecr_repository_policy" "grafana_mimir_continuous_test" {
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
 
+resource "aws_ecr_repository_policy" "jenkinsx_lighthouse_helm" {
+  repository = aws_ecr_repository.jenkinsx_lighthouse_helm.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "jenkinsx_lighthouse_gc_jobs" {
+  repository = aws_ecr_repository.jenkinsx_lighthouse_gc_jobs.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "jenkinsx_lighthouse_webhooks" {
+  repository = aws_ecr_repository.jenkinsx_lighthouse_webhooks.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "jenkinsx_lighthouse_foghorn" {
+  repository = aws_ecr_repository.jenkinsx_lighthouse_foghorn.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "jenkinsx_lighthouse_tekton_controller" {
+  repository = aws_ecr_repository.jenkinsx_lighthouse_tekton_controller.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "jenkinsx_lighthouse_keeper" {
+  repository = aws_ecr_repository.jenkinsx_lighthouse_keeper.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "jenkinsx_lighthouse_poller" {
+  repository = aws_ecr_repository.jenkinsx_lighthouse_poller.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
 resource "aws_ecr_repository_policy" "cortex_tenant" {
   repository = aws_ecr_repository.cortex_tenant.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
@@ -455,5 +490,10 @@ resource "aws_ecr_repository_policy" "rust" {
 
 resource "aws_ecr_repository_policy" "kubectl" {
   repository = aws_ecr_repository.kubectl.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "pauwels_labs_gitops_coverage" {
+  repository = aws_ecr_repository.pauwels_labs_gitops_coverage.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }

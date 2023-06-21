@@ -1,0 +1,28 @@
+serviceAccountName: pipeline-runner
+pipelineRef:
+  resolver: cluster
+  params:
+  - name: kind
+    value: pipeline
+  - name: name
+    value: clone-build-push
+  - name: namespace
+    value: "i-tekton-pipelines"
+podTemplate:
+  securityContext:
+    fsGroup: 65532
+workspaces:
+- name: shared-data
+  volumeClaimTemplate:
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+- name: docker-credentials
+  secret:
+    secretName: ecr-credentials
+    items:
+    - key: ".dockerconfigjson"
+      path: "config.json"

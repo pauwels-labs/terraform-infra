@@ -26,8 +26,189 @@ locals {
     "kind"       = "Kustomization"
     "namespace"  = "t-${var.tenant_name}"
     "resources"  = concat(
-      ["../base"],
+      ["../base", "configmap-lighthouse-config.yaml", "configmap-lighthouse-plugins.yaml"],
       [for service in var.services : "externalsecret-ssh-${var.tenant_name}-${local.tenant_repo_host_name}-${var.tenant_repo_org_name}-${service.name}.yaml"]
+      )
+  }
+  configmap_lighthouse_config_yaml = {
+    "apiVersion"        = "v1"
+    "kind"              = "ConfigMap"
+    "metadata"          = {
+      "name"   = "config"
+      "labels" = {
+        "toolkit.fluxcd.io/tenant" = var.tenant_name
+      }
+    }
+    "data"              = {
+      "config.yaml" = yamlencode(local.lighthouse_config_yaml)
+    }
+  }
+  lighthouse_config_yaml = {
+    "pod_namespace"     = "t-${var.tenant_name}"
+    "prowjob_namespace" = "t-${var.tenant_name}"
+    "postsubmits"       = {
+      for service in var.services : "${var.tenant_repo_org_name}/${service.name}" => [
+        {
+          "agent"     = "tekton-pipeline"
+          "branches"  = [
+            "main"
+          ]
+          "context"   = "release"
+          "name"      = "release"
+          "clone_uri" = "git@github.com:${var.tenant_repo_org_name}/${service.name}.git"
+          "pipeline_run_spec"   = yamldecode(file("${path.module}/pipelinerunspec_release.yaml"))
+          "pipeline_run_params" = [
+            {
+              "name"           = "revision"
+              "value_template" = "{{ .Refs.BaseSHA }}"
+            },
+            {
+              "name"           = "sshURL"
+              "value_template" = "git@github.com:{{ .Refs.Org }}/{{ .Refs.Repo }}.git"
+            },
+            {
+              "name"           = "imageURL"
+              "value_template" = "274295908850.dkr.ecr.eu-west-1.amazonaws.com/t/${var.tenant_name}/github/{{ .Refs.Org }}/{{ .Refs.Repo }}"
+            },
+            {
+              "name"           = "ghTokenSecretName"
+              "value_template" = "token-github-capt-haddock"
+            },
+            {
+              "name"           = "sshSecretName"
+              "value_template" = "ssh-${var.tenant_name}-github-{{ .Refs.Org }}-{{ .Refs.Repo }}"
+            }
+          ]
+        }
+      ]
+    }
+    "presubmits"        = {
+      for service in var.services : "${var.tenant_repo_org_name}/${service.name}" => [
+        {
+          "agent"               = "tekton-pipeline"
+          "context"             = "unit"
+          "name"                = "unit"
+          "clone_uri"           = "git@github.com:${var.tenant_repo_org_name}/${service.name}.git"
+          "always_run"          = true
+          "optional"            = false
+          "pipeline_run_spec"   = yamldecode(file("${path.module}/pipelinerunspec_unittest.yaml"))
+          "pipeline_run_params" = [
+            {
+              "name"           = "revision"
+              "value_template" = "{{ .Refs.BaseSHA }}"
+            },
+            {
+              "name"           = "sshURL"
+              "value_template" = "git@github.com:{{ .Refs.Org }}/{{ .Refs.Repo }}.git"
+            },
+            {
+              "name"           = "ghTokenSecretName"
+              "value_template" = "token-github-capt-haddock"
+            },
+            {
+              "name"           = "sshSecretName"
+              "value_template" = "ssh-${var.tenant_name}-github-{{ .Refs.Org }}-{{ .Refs.Repo }}"
+            },
+            {
+              "name"           = "prRun"
+              "value_template" = "{{ len .Refs.Pulls }}"
+            }
+          ]
+        }
+      ]
+    }
+    "in_repo_config"    = {
+      "enabled" = {
+        "*" = true
+      }
+    }
+    "tide"              = {
+      "queries" = [
+        {
+          "labels"        = [
+            "approved"
+          ]
+          "missingLabels" = [
+            "do-not-merge",
+            "do-not-merge/hold",
+            "do-not-merge/work-in-progress",
+            "needs-ok-to-test"
+          ]
+          "repos"         = [
+            for service in var.services : "${var.tenant_repo_org_name}/${service.name}"
+          ]
+        }
+      ]
+    }
+  }
+
+  configmap_lighthouse_plugins_yaml = {
+    "apiVersion"        = "v1"
+    "kind"              = "ConfigMap"
+    "metadata"          = {
+      "name"   = "plugins"
+      "labels" = {
+        "toolkit.fluxcd.io/tenant" = var.tenant_name
+      }
+    }
+    "data"              = {
+      "plugins.yaml" = yamlencode(local.lighthouse_plugins_yaml)
+    }
+  }
+  lighthouse_plugins_yaml = {
+    "approve"        = [
+      {
+        "lgtm_acts_as_approve"  = false
+        "repos"                 = concat(
+          ["${var.tenant_repo_org_name}/tenant-${var.tenant_name}"],
+          [for service in var.services : "${var.tenant_repo_org_name}/${service.name}"]
+          )
+        "require_self_approval" = true
+      }
+    ]
+    "config_updater" = {
+      "gzip" = false
+      "maps" = {
+        "infra/configmap-lighthouse-config.yaml"  = {
+          "name" = "config"
+        }
+        "infra/configmap-lighthouse-plugins.yaml" = {
+          "name" = "plugins"
+        }
+      }
+    }
+    "triggers"       = [
+      {
+        "repos"                  = [
+          for service in var.services : "${var.tenant_repo_org_name}/${service.name}"
+        ]
+        "ignore_ok_to_test"      = false
+        "elide_skipped_contexts" = false
+      }
+    ]
+    "plugins"        = merge(
+      {
+        "pauwels-labs/tenant-pauwels-labs-main" = [
+          "config-updater",
+          "approve",
+          "lgtm"
+        ]
+      },
+      {
+        for service in var.services : "${var.tenant_repo_org_name}/${service.name}" => [
+          "approve",
+          "assign",
+          "cat",
+          "dog",
+          "hold",
+          "label",
+          "lgtm",
+          "size",
+          "trigger",
+          "wip",
+          "yuks"
+        ]
+      }
       )
   }
 }

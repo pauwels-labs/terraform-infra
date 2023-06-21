@@ -54,6 +54,7 @@ data aws_iam_policy_document "allow_tenant_ro_access_to_ecr_namespace" {
       "ecr:BatchCheckLayerAvailability",
     ]
     resources = [
+      "${local.ecr_arn}/helm/*",
       "${local.ecr_arn}/i/*"
     ]
   }
@@ -121,6 +122,7 @@ data aws_iam_policy_document "allow_tenant_rw_access_to_ecr_namespace" {
       "ecr:BatchCheckLayerAvailability",
     ]
     resources = [
+      "${local.ecr_arn}/helm/*",
       "${local.ecr_arn}/i/*"
     ]
   }

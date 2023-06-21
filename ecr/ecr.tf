@@ -718,6 +718,62 @@ resource "aws_ecr_repository" "grafana_mimir_continuous_test" {
   }
 }
 
+resource "aws_ecr_repository" "jenkinsx_lighthouse_helm" {
+  name                 = "helm/jenkins-x/lighthouse"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "jenkinsx_lighthouse_gc_jobs" {
+  name                 = "i/jenkins-x/lighthouse-gc-jobs"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "jenkinsx_lighthouse_webhooks" {
+  name                 = "i/jenkins-x/lighthouse-webhooks"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "jenkinsx_lighthouse_foghorn" {
+  name                 = "i/jenkins-x/lighthouse-foghorn"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "jenkinsx_lighthouse_tekton_controller" {
+  name                 = "i/jenkins-x/lighthouse-tekton-controller"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "jenkinsx_lighthouse_keeper" {
+  name                 = "i/jenkins-x/lighthouse-keeper"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "jenkinsx_lighthouse_poller" {
+  name                 = "i/jenkins-x/lighthouse-poller"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
 resource "aws_ecr_repository" "cortex_tenant" {
   name                 = "i/cortex/tenant"
   image_tag_mutability = "MUTABLE"
@@ -744,6 +800,14 @@ resource "aws_ecr_repository" "rust" {
 
 resource "aws_ecr_repository" "kubectl" {
   name                 = "i/bitnami/kubectl"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "pauwels_labs_gitops_coverage" {
+  name                 = "i/pauwels-labs/gitops-coverage"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false

@@ -41,12 +41,7 @@ services                  = [
   {
     "name"          = "nodejs-example",
     "template_name" = "nodejs-express",
-    "domain"        = "pauwelslabs.com",
-    "envs"            = [
-      {
-        "name" = "dev"
-      }
-    ]
+    "domain"        = "pauwelslabs.com"
   }
 ]
 tenant_name               = "pauwels-labs-main"

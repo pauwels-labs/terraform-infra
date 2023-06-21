@@ -1,10 +1,14 @@
 resource "github_repository" "this" {
   name                   = var.service_name
   auto_init              = false
+  allow_merge_commit     = true
   allow_rebase_merge     = false
   allow_squash_merge     = false
+  allow_auto_merge       = false
+  allow_update_branch    = true
   delete_branch_on_merge = true
   visibility             = var.service_repo_visibility
+  has_issues             = true
 
   dynamic "template" {
     for_each = length(var.template_name) == 0 ? toset([]) : toset([1])
@@ -25,11 +29,23 @@ resource "github_repository_webhook" "ci" {
   repository = github_repository.this.name
   active     = true
   events     = [
-    "push"
+    "commit_comment",
+    "create",
+    "delete",
+    "issue_comment",
+    "issues",
+    "label",
+    "ping",
+    "pull_request",
+    "pull_request_review_comment",
+    "pull_request_review",
+    "pull_request_review_thread",
+    "push",
+    "release"
   ]
 
   configuration {
-    url          = "https://webhook.ci.${var.org_domain}/${var.tenant_name}"
+    url          = "https://webhook.ci.${var.org_domain}/${var.tenant_name}/hook"
     content_type = "json"
     secret       = data.vault_kv_secret_v2.hmac.data.token
   }
