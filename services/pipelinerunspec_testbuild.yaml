@@ -5,7 +5,7 @@ pipelineRef:
   - name: kind
     value: pipeline
   - name: name
-    value: release
+    value: pr-test-build
   - name: namespace
     value: "i-tekton-pipelines"
 podTemplate:

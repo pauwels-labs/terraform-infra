@@ -710,6 +710,22 @@ resource "aws_ecr_repository" "grafana_agent_operator_helm" {
   }
 }
 
+resource "aws_ecr_repository" "grafana_tempo" {
+  name                 = "i/grafana/tempo"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "grafana_tempo_distributed_helm" {
+  name                 = "helm/grafana/tempo-distributed"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
 resource "aws_ecr_repository" "grafana_mimir_continuous_test" {
   name                 = "i/grafana/mimir-continuous-test"
   image_tag_mutability = "MUTABLE"

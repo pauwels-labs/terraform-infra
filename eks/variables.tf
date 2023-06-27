@@ -29,6 +29,16 @@ variable "cluster_description" {
   type        = string
 }
 
+variable "enabled_logs" {
+  description = "List of the log types that will be exported to CloudWatch"
+  type        = list(string)
+  default     = [
+    "audit",
+    "api",
+    "authenticator"
+  ]
+}
+
 variable "cluster_version" {
   description = "Kubernetes version of the cluster"
   type        = string
@@ -227,6 +237,12 @@ variable "use_loki" {
   default     = false
 }
 
+variable "use_tempo" {
+  description = "Set to true to deploy a Grafana Tempo role for accessing backing S3 buckets"
+  type        = bool
+  default     = false
+}
+
 variable "mimir_ruler_bucket_arn" {
   description = "ARN of the S3 bucket to use for storing Mimir ruler objects"
   type        = string
@@ -234,7 +250,7 @@ variable "mimir_ruler_bucket_arn" {
 }
 
 variable "mimir_ruler_key_alias_name" {
-  description = "Name of the alias (in alias/<alias name> format)of the KMS key to use for encryting and decrypting Mimir ruler objects stored in S3"
+  description = "Name of the alias (in alias/<alias name> format) of the KMS key to use for encryting and decrypting Mimir ruler objects stored in S3"
   type        = string
   default     = ""
 }
@@ -258,7 +274,7 @@ variable "loki_ruler_bucket_arn" {
 }
 
 variable "loki_ruler_key_alias_name" {
-  description = "Name of the alias (in alias/<alias name> format)of the KMS key to use for encryting and decrypting Loki ruler objects stored in S3"
+  description = "Name of the alias (in alias/<alias name> format) of the KMS key to use for encryting and decrypting Loki ruler objects stored in S3"
   type        = string
   default     = ""
 }
@@ -283,6 +299,30 @@ variable "loki_admin_bucket_arn" {
 
 variable "loki_admin_key_alias_name" {
   description = "Name of the alias (in alias/<alias name> fomat) of the KMS key to use for encryting and decrypting Loki admin objects stored in S3"
+  type        = string
+  default     = ""
+}
+
+variable "tempo_traces_bucket_arn" {
+  description = "ARN of the S3 bucket to use for storing Tempo traces objects"
+  type        = string
+  default     = ""
+}
+
+variable "tempo_traces_key_alias_name" {
+  description = "Name of the alias (in alias/<alias name> format) of the KMS key to use for encryting and decrypting Tempo traces objects stored in S3"
+  type        = string
+  default     = ""
+}
+
+variable "tempo_admin_bucket_arn" {
+  description = "ARN of the S3 bucket to use for storing Tempo admin objects"
+  type        = string
+  default     = ""
+}
+
+variable "tempo_admin_key_alias_name" {
+  description = "Name of the alias (in alias/<alias name> fomat) of the KMS key to use for encryting and decrypting Tempo admin objects stored in S3"
   type        = string
   default     = ""
 }

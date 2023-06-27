@@ -106,7 +106,7 @@ resource "aws_s3_bucket" "loki_chunks" {
   bucket_prefix = "loki-chunks-"
 
   tags = {
-    Name = "loki-bocks"
+    Name = "loki-chunks"
   }
 }
 
@@ -206,7 +206,7 @@ resource "aws_s3_bucket" "loki_admin" {
   bucket_prefix = "loki-admin-"
 
   tags = {
-    Name = "loki-bocks"
+    Name = "loki-admin"
   }
 }
 

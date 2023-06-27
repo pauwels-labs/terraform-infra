@@ -25,6 +25,30 @@ resource "github_branch_default" "this" {
   branch     = "main"
 }
 
+resource "github_branch_protection" "this" {
+  count = var.service_repo_visibility == "public" ? 1 : 0
+
+  repository_id       = github_repository.this.name
+  pattern             = "main"
+  enforce_admins      = true
+  allows_deletions    = false
+  allows_force_pushes = false
+
+  required_status_checks {
+    strict = true
+    contexts = [
+      "Lighthouse Merge Status",
+      "build",
+      "unit"
+    ]
+  }
+
+  # required_pull_request_reviews {
+  #   dismiss_stale_reviews           = true
+  #   required_approving_review_count = 1
+  # }
+}
+
 resource "github_repository_webhook" "ci" {
   repository = github_repository.this.name
   active     = true

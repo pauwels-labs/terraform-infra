@@ -2,6 +2,7 @@ cluster_count        = 1
 cluster_region       = "eu-west-1"
 cluster_name         = "bill"
 cluster_description  = "Contains client hosted workloads"
+enabled_logs         = []
 cluster_version      = "1.27"
 cluster_vpc_cidr     = "10.10.0.0/16"
 cluster_service_cidr = "10.100.0.0/16"

@@ -1249,3 +1249,117 @@ resource "aws_iam_role_policy_attachment" "grant_s3_access_to_loki_role" {
   role       = aws_iam_role.loki[0].name
   policy_arn = aws_iam_policy.loki[0].arn
 }
+
+# Tempo role
+data "aws_iam_policy_document" "tempo" {
+  count = var.use_tempo ? 1 : 0
+
+  statement {
+    effect    = "Allow"
+    actions   = [
+      "kms:Decrypt",
+      "kms:GenerateDataKey"
+    ]
+    resources = ["*"]
+    condition {
+      test     = "ForAnyValue:StringEquals"
+      variable = "kms:ResourceAliases"
+      values   = [
+        var.tempo_traces_key_alias_name,
+        var.tempo_admin_key_alias_name
+      ]
+    }
+  }
+  statement {
+    effect    = "Allow"
+    actions   = [
+      "s3:PutObject",
+      "s3:GetObject",
+      "s3:DeleteObject",
+      "s3:GetObjectAttributes"
+    ]
+    resources = [
+      "${var.tempo_traces_bucket_arn}/*",
+      "${var.tempo_admin_bucket_arn}/*"
+    ]
+  }
+  statement {
+    effect    = "Allow"
+    actions   = [
+      "s3:ListBucket"
+    ]
+    resources = [
+      "${var.tempo_traces_bucket_arn}",
+      "${var.tempo_admin_bucket_arn}"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "tempo" {
+  provider = aws.cluster
+  count = var.use_tempo ? 1 : 0
+  
+  name        = "AllowTempo-${var.cluster_name}"
+  description = "Allows the various Tempo services in the ${var.cluster_name} k8s clusters to store objects in S3 buckets"
+  policy      = data.aws_iam_policy_document.tempo[0].json
+}
+
+data "aws_iam_policy_document" "tempo_trust_policy" {
+  count = var.use_tempo ? 1 : 0
+
+  dynamic "statement" {
+    for_each = local.clusters
+
+    content {
+      actions   = [
+        "sts:AssumeRoleWithWebIdentity"
+      ]
+      effect    = "Allow"
+
+      principals {
+        type = "Federated"
+        identifiers = [
+          statement.value.oidc_provider_arn
+        ]
+      }
+
+      condition {
+        test     = "StringEquals"
+        variable = "${statement.value.oidc_provider}:aud"
+        values   = [
+          "sts.amazonaws.com"
+        ]
+      }
+      condition {
+        test     = "StringEquals"
+        variable = "${statement.value.oidc_provider}:sub"
+        values   = [
+          "system:serviceaccount:i-grafana-tempo:grafana-tempo"
+        ]
+      }
+    }
+  }
+}
+
+resource "aws_iam_role" "tempo" {
+  provider = aws.cluster
+  count = var.use_tempo ? 1 : 0
+
+  name = "${var.cluster_name}-tempo"
+
+  assume_role_policy = data.aws_iam_policy_document.tempo_trust_policy[0].json
+
+  tags = {
+    Name        = "${var.cluster_name}-tempo"
+    Description = "Role used to allow Tempo services in the ${var.cluster_name} clusters to store objects in S3"
+    Cluster     = var.cluster_name
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "grant_s3_access_to_tempo_role" {
+  provider = aws.cluster
+  count = var.use_tempo ? 1 : 0
+
+  role       = aws_iam_role.tempo[0].name
+  policy_arn = aws_iam_policy.tempo[0].arn
+}

@@ -1,27 +1,27 @@
-# Mimir ruler
-resource "aws_s3_bucket" "mimir_ruler" {
+# Tempo traces
+resource "aws_s3_bucket" "tempo_traces" {
   provider = aws.artifacts
 
-  bucket_prefix = "mimir-ruler-"
+  bucket_prefix = "tempo-traces-"
 
   tags = {
-    Name = "mimir-ruler"
+    Name = "tempo-traces"
   }
 }
 
-resource "aws_s3_bucket_ownership_controls" "mimir_ruler" {
+resource "aws_s3_bucket_ownership_controls" "tempo_traces" {
   provider = aws.artifacts
 
-  bucket = aws_s3_bucket.mimir_ruler.id
+  bucket = aws_s3_bucket.tempo_traces.id
   rule {
     object_ownership = "BucketOwnerEnforced"
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "mimir_ruler" {
+resource "aws_s3_bucket_public_access_block" "tempo_traces" {
   provider = aws.artifacts
 
-  bucket = aws_s3_bucket.mimir_ruler.id
+  bucket = aws_s3_bucket.tempo_traces.id
 
   block_public_acls       = true
   block_public_policy     = true
@@ -29,7 +29,7 @@ resource "aws_s3_bucket_public_access_block" "mimir_ruler" {
   restrict_public_buckets = true
 }
 
-data "aws_iam_policy_document" "mimir_ruler_bucket_policy" {
+data "aws_iam_policy_document" "tempo_traces_bucket_policy" {
   provider = aws.artifacts
 
   statement {
@@ -37,8 +37,8 @@ data "aws_iam_policy_document" "mimir_ruler_bucket_policy" {
       "s3:*"
     ]
     resources = [
-      "${aws_s3_bucket.mimir_ruler.arn}",
-      "${aws_s3_bucket.mimir_ruler.arn}/*"
+      "${aws_s3_bucket.tempo_traces.arn}",
+      "${aws_s3_bucket.tempo_traces.arn}/*"
     ]
     principals {
       type        = "AWS"      
@@ -54,7 +54,7 @@ data "aws_iam_policy_document" "mimir_ruler_bucket_policy" {
       "s3:GetObjectAttributes"
     ]
     resources = [
-      "${aws_s3_bucket.mimir_ruler.arn}/*",
+      "${aws_s3_bucket.tempo_traces.arn}/*",
     ]
     principals {
       type        = "AWS"      
@@ -67,7 +67,7 @@ data "aws_iam_policy_document" "mimir_ruler_bucket_policy" {
       "s3:ListBucket"
     ]
     resources = [
-      aws_s3_bucket.mimir_ruler.arn,
+      aws_s3_bucket.tempo_traces.arn,
     ]
     principals {
       type        = "AWS"      
@@ -76,17 +76,17 @@ data "aws_iam_policy_document" "mimir_ruler_bucket_policy" {
   }
 }
 
-resource "aws_s3_bucket_policy" "mimir_ruler" {
+resource "aws_s3_bucket_policy" "tempo_traces" {
   provider = aws.artifacts
 
-  bucket = aws_s3_bucket.mimir_ruler.id
-  policy = data.aws_iam_policy_document.mimir_ruler_bucket_policy.json
+  bucket = aws_s3_bucket.tempo_traces.id
+  policy = data.aws_iam_policy_document.tempo_traces_bucket_policy.json
 }
 
-resource "aws_s3_bucket_server_side_encryption_configuration" "mimir_ruler_encryption" {
+resource "aws_s3_bucket_server_side_encryption_configuration" "tempo_traces_encryption" {
   provider = aws.artifacts
 
-  bucket                = aws_s3_bucket.mimir_ruler.bucket
+  bucket                = aws_s3_bucket.tempo_traces.bucket
   expected_bucket_owner = var.artifacts_account_id
 
   rule {
@@ -94,35 +94,35 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "mimir_ruler_encry
 
     apply_server_side_encryption_by_default {
       sse_algorithm     = "aws:kms"
-      kms_master_key_id = aws_kms_alias.mimir_ruler_encryption.arn
+      kms_master_key_id = aws_kms_alias.tempo_traces_encryption.arn
     }
   }
 }
 
-# Mimir blocks
-resource "aws_s3_bucket" "mimir_blocks" {
+# Tempo admin
+resource "aws_s3_bucket" "tempo_admin" {
   provider = aws.artifacts
 
-  bucket_prefix = "mimir-blocks-"
+  bucket_prefix = "tempo-admin-"
 
   tags = {
-    Name = "mimir-blocks"
+    Name = "tempo-admin"
   }
 }
 
-resource "aws_s3_bucket_ownership_controls" "mimir_blocks" {
+resource "aws_s3_bucket_ownership_controls" "tempo_admin" {
   provider = aws.artifacts
 
-  bucket = aws_s3_bucket.mimir_blocks.id
+  bucket = aws_s3_bucket.tempo_admin.id
   rule {
     object_ownership = "BucketOwnerEnforced"
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "mimir_blocks" {
+resource "aws_s3_bucket_public_access_block" "tempo_admin" {
   provider = aws.artifacts
 
-  bucket = aws_s3_bucket.mimir_blocks.id
+  bucket = aws_s3_bucket.tempo_admin.id
 
   block_public_acls       = true
   block_public_policy     = true
@@ -130,7 +130,7 @@ resource "aws_s3_bucket_public_access_block" "mimir_blocks" {
   restrict_public_buckets = true
 }
 
-data "aws_iam_policy_document" "mimir_blocks_bucket_policy" {
+data "aws_iam_policy_document" "tempo_admin_bucket_policy" {
   provider = aws.artifacts
 
   statement {
@@ -138,8 +138,8 @@ data "aws_iam_policy_document" "mimir_blocks_bucket_policy" {
       "s3:*"
     ]
     resources = [
-      "${aws_s3_bucket.mimir_blocks.arn}",
-      "${aws_s3_bucket.mimir_blocks.arn}/*"
+      "${aws_s3_bucket.tempo_admin.arn}",
+      "${aws_s3_bucket.tempo_admin.arn}/*"
     ]
     principals {
       type        = "AWS"      
@@ -155,7 +155,7 @@ data "aws_iam_policy_document" "mimir_blocks_bucket_policy" {
       "s3:GetObjectAttributes"
     ]
     resources = [
-      "${aws_s3_bucket.mimir_blocks.arn}/*"
+      "${aws_s3_bucket.tempo_admin.arn}/*"
     ]
     principals {
       type        = "AWS"      
@@ -168,7 +168,7 @@ data "aws_iam_policy_document" "mimir_blocks_bucket_policy" {
       "s3:ListBucket"
     ]
     resources = [
-      aws_s3_bucket.mimir_blocks.arn
+      aws_s3_bucket.tempo_admin.arn
     ]
     principals {
       type        = "AWS"      
@@ -177,24 +177,24 @@ data "aws_iam_policy_document" "mimir_blocks_bucket_policy" {
   }
 }
 
-resource "aws_s3_bucket_policy" "mimir_blocks" {
+resource "aws_s3_bucket_policy" "tempo_admin" {
   provider = aws.artifacts
 
-  bucket = aws_s3_bucket.mimir_blocks.id
-  policy = data.aws_iam_policy_document.mimir_blocks_bucket_policy.json
+  bucket = aws_s3_bucket.tempo_admin.id
+  policy = data.aws_iam_policy_document.tempo_admin_bucket_policy.json
 }
 
-resource "aws_s3_bucket_server_side_encryption_configuration" "mimir_blocks_encryption" {
+resource "aws_s3_bucket_server_side_encryption_configuration" "tempo_admin_encryption" {
   provider = aws.artifacts
 
-  bucket = aws_s3_bucket.mimir_blocks.bucket
+  bucket = aws_s3_bucket.tempo_admin.bucket
 
   rule {
     bucket_key_enabled = true
 
     apply_server_side_encryption_by_default {
       sse_algorithm     = "aws:kms"
-      kms_master_key_id = aws_kms_alias.mimir_blocks_encryption.arn
+      kms_master_key_id = aws_kms_alias.tempo_admin_encryption.arn
     }
   }
 }

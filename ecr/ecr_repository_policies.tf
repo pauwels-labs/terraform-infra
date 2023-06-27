@@ -433,6 +433,16 @@ resource "aws_ecr_repository_policy" "grafana_agent_operator_helm" {
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
 
+resource "aws_ecr_repository_policy" "grafana_tempo" {
+  repository = aws_ecr_repository.grafana_tempo.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "grafana_tempo_distributed_helm" {
+  repository = aws_ecr_repository.grafana_tempo_distributed_helm.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
 resource "aws_ecr_repository_policy" "grafana_mimir_continuous_test" {
   repository = aws_ecr_repository.grafana_mimir_continuous_test.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json

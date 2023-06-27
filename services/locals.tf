@@ -59,24 +59,16 @@ locals {
           "pipeline_run_spec"   = yamldecode(file("${path.module}/pipelinerunspec_release.yaml"))
           "pipeline_run_params" = [
             {
-              "name"           = "revision"
-              "value_template" = "{{ .Refs.BaseSHA }}"
+              "name"           = "tenantName"
+              "value_template" = "${var.tenant_name}"
             },
             {
-              "name"           = "sshURL"
-              "value_template" = "git@github.com:{{ .Refs.Org }}/{{ .Refs.Repo }}.git"
-            },
-            {
-              "name"           = "imageURL"
-              "value_template" = "274295908850.dkr.ecr.eu-west-1.amazonaws.com/t/${var.tenant_name}/github/{{ .Refs.Org }}/{{ .Refs.Repo }}"
+              "name"           = "imageRegistry"
+              "value_template" = "274295908850.dkr.ecr.eu-west-1.amazonaws.com"
             },
             {
               "name"           = "ghTokenSecretName"
               "value_template" = "token-github-capt-haddock"
-            },
-            {
-              "name"           = "sshSecretName"
-              "value_template" = "ssh-${var.tenant_name}-github-{{ .Refs.Org }}-{{ .Refs.Repo }}"
             }
           ]
         }
@@ -91,27 +83,38 @@ locals {
           "clone_uri"           = "git@github.com:${var.tenant_repo_org_name}/${service.name}.git"
           "always_run"          = true
           "optional"            = false
-          "pipeline_run_spec"   = yamldecode(file("${path.module}/pipelinerunspec_unittest.yaml"))
+          "pipeline_run_spec"   = yamldecode(file("${path.module}/pipelinerunspec_testunit.yaml"))
           "pipeline_run_params" = [
             {
-              "name"           = "revision"
-              "value_template" = "{{ .Refs.BaseSHA }}"
+              "name"           = "tenantName"
+              "value_template" = "${var.tenant_name}"
             },
             {
-              "name"           = "sshURL"
-              "value_template" = "git@github.com:{{ .Refs.Org }}/{{ .Refs.Repo }}.git"
+              "name"           = "imageRegistry"
+              "value_template" = "274295908850.dkr.ecr.eu-west-1.amazonaws.com"
             },
             {
               "name"           = "ghTokenSecretName"
               "value_template" = "token-github-capt-haddock"
+            }
+          ]
+        },
+        {
+          "agent"               = "tekton-pipeline"
+          "context"             = "build"
+          "name"                = "build"
+          "clone_uri"           = "git@github.com:${var.tenant_repo_org_name}/${service.name}.git"
+          "always_run"          = true
+          "optional"            = false
+          "pipeline_run_spec"   = yamldecode(file("${path.module}/pipelinerunspec_testbuild.yaml"))
+          "pipeline_run_params" = [
+            {
+              "name"           = "tenantName"
+              "value_template" = "${var.tenant_name}"
             },
             {
-              "name"           = "sshSecretName"
-              "value_template" = "ssh-${var.tenant_name}-github-{{ .Refs.Org }}-{{ .Refs.Repo }}"
-            },
-            {
-              "name"           = "prRun"
-              "value_template" = "{{ len .Refs.Pulls }}"
+              "name"           = "imageRegistry"
+              "value_template" = "274295908850.dkr.ecr.eu-west-1.amazonaws.com"
             }
           ]
         }

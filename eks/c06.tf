@@ -27,6 +27,8 @@ module "c6" {
     Description = var.cluster_description
   }
 
+  cluster_enabled_log_types = []
+
   cluster_ip_family          = var.use_ipv6 ? "ipv6" : "ipv4"
   create_cni_ipv6_iam_policy = var.use_ipv6
   cluster_service_ipv4_cidr  = var.use_ipv6 ? null : var.cluster_service_cidr
