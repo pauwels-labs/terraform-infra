@@ -498,6 +498,11 @@ resource "aws_ecr_repository_policy" "rust" {
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
 
+resource "aws_ecr_repository_policy" "golang" {
+  repository = aws_ecr_repository.golang.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
 resource "aws_ecr_repository_policy" "kubectl" {
   repository = aws_ecr_repository.kubectl.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json

@@ -14,6 +14,7 @@ cluster_account_id               = "140327370353"
 cluster_account_assume_role_name = "OrganizationAccountAccessRole"
 
 cluster_instance_types = [
+  "a1.xlarge",
   "m5.xlarge",
   "m5d.xlarge",
   "m5a.xlarge",
@@ -21,6 +22,11 @@ cluster_instance_types = [
   "m5n.xlarge",
   "m5dn.xlarge",
   "m5zn.xlarge",
+  "m6a.xlarge",
+  "m6g.xlarge",
+  "m6i.xlarge",
+  "m6in.xlarge",
+  "m6idn.xlarge",
   "t3.xlarge",
   "t3a.xlarge",
 ]

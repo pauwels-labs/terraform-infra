@@ -1,0 +1,29 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: ""
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  serviceAccountName: kustomize-controller
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./tenant/base
+  targetNamespace: ""
+  prune: true
+  wait: true
+  timeout: 30s
+  postBuild:
+    substitute:
+      organisation_name: ""
+      team_name: ""
+      repository_host: ""
+      repository_organisation: ""
+      repository_name: ""
+      repository_url: ""
+      repository_path: ""
+      repository_bot_name: ""
+    substituteFrom:
+    - kind: ConfigMap
+      name: external-config-data

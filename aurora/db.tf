@@ -2,7 +2,7 @@ data "aws_rds_engine_version" "postgresql" {
   provider = aws.databases
 
   engine  = "aurora-postgresql"
-  version = "14.5"
+  version = "15.3"
 }
 
 resource "aws_db_subnet_group" "private" {
@@ -45,6 +45,36 @@ resource "aws_rds_cluster_parameter_group" "this" {
     Description = "Parameter group for the ${var.name} Aurora Serverless v2 PostgreSQL cluster"
     Cluster     = var.name
     Type        = "cluster"
+  })
+}
+
+resource "aws_db_parameter_group" "this_v15" {
+  provider = aws.databases
+
+  name        = "aurora-pgsql-${var.name}-v15"
+  family      = "aurora-postgresql15"
+  description = "Parameter group for the ${var.name} Aurora Serverless v2 PostgreSQL database"
+  tags        = tomap({
+    Name         = "aurora-pgsql-${var.name}-v15"
+    Description  = "Parameter group for the ${var.name} Aurora Serverless v2 PostgreSQL database"
+    Cluster      = var.name
+    Type         = "database"
+    MajorVersion = "15"
+  })
+}
+
+resource "aws_rds_cluster_parameter_group" "this_v15" {
+  provider = aws.databases
+
+  name        = "aurora-pgsql-${var.name}-v15"
+  family      = "aurora-postgresql15"
+  description = "Parameter group for the ${var.name} Aurora Serverless v2 PostgreSQL cluster"
+  tags        = tomap({
+    Name         = "aurora-pgsql-${var.name}-v15"
+    Description  = "Parameter group for the ${var.name} Aurora Serverless v2 PostgreSQL cluster"
+    Cluster      = var.name
+    Type         = "cluster"
+    MajorVersion = "15"
   })
 }
 
@@ -118,6 +148,9 @@ module "this" {
   engine_mode       = "provisioned"
   engine_version    = data.aws_rds_engine_version.postgresql.version
 
+  allow_major_version_upgrade                 = true
+  db_cluster_db_instance_parameter_group_name = aws_db_parameter_group.this_v15.id
+
   storage_encrypted = true
   kms_key_id        = aws_kms_key.this.arn
 
@@ -138,10 +171,10 @@ module "this" {
   skip_final_snapshot = true
 
   create_db_cluster_parameter_group = false
-  db_cluster_parameter_group_name   = aws_rds_cluster_parameter_group.this.id
+  db_cluster_parameter_group_name   = aws_rds_cluster_parameter_group.this_v15.id
 
   create_db_parameter_group = false
-  db_parameter_group_name   = aws_db_parameter_group.this.id
+  db_parameter_group_name   = aws_db_parameter_group.this_v15.id
 
   create_db_subnet_group = false
   db_subnet_group_name   = aws_db_subnet_group.private.name

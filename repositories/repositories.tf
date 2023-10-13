@@ -6,6 +6,7 @@ resource "github_repository" "this" {
   allow_rebase_merge     = false
   allow_squash_merge     = false
   delete_branch_on_merge = true
+  visibility             = "private"
 }
 
 resource "github_branch_default" "this" {

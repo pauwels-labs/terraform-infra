@@ -814,6 +814,14 @@ resource "aws_ecr_repository" "rust" {
   }
 }
 
+resource "aws_ecr_repository" "golang" {
+  name                 = "i/golang"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
 resource "aws_ecr_repository" "kubectl" {
   name                 = "i/bitnami/kubectl"
   image_tag_mutability = "MUTABLE"

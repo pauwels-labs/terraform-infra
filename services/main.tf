@@ -4,11 +4,11 @@ terraform {
     key = "services.tfstate"
     region = "eu-west-1"
     profile = "mfa"    
-    role_arn = "arn:aws:iam::404672225309:role/TerraformBackend"    
     acl = "private"
     encrypt = true
     kms_key_id = "alias/terraform"
     workspace_key_prefix = "workspaces"
+    role_arn = "arn:aws:iam::404672225309:role/TerraformBackend"
   }
 
   required_providers {

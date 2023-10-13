@@ -37,6 +37,31 @@ services                  = [
   {
     "name"   = "redact-website",
     "domain" = "redact.ws"
+    "envs"            = [
+      {
+        "name" = "prod"
+      }
+    ]
+  },
+  {
+    "name"          = "bitmantle-website",
+    "domain"        = "bitmantle.com"
+    "envs"            = [
+      {
+        "name" = "prod"
+      }
+    ]
+  },
+  {
+    "name"            = "slack-bot",
+    "repo_visibility" = "public",
+    "template_name"   = "golang-http",
+    "domain"          = "bitmantle.com",
+    "envs"            = [
+      {
+        "name" = "prod"
+      }
+    ]
   },
   {
     "name"          = "nodejs-example",

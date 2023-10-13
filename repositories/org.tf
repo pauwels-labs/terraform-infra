@@ -3,13 +3,13 @@ data "github_organization" "this" {
 }
 
 resource "github_organization_settings" "this" {
-  billing_email                 = "alex@pauwelslabs.com"
-  blog                          = "https://pauwelslabs.com"
+  billing_email                 = "alex@bitmantle.com"
+  blog                          = "https://bitmantle.com"
   default_repository_permission = "none"
-  description                   = "New technologies"
-  email                         = "alex@pauwelslabs.com"
+  description                   = "Turn-key developer platforms"
+  email                         = "alex@bitmantle.com"
   location                      = "Portugal"
-  name                          = "pauwels labs"
+  name                          = "bitmantle"
 }
 
 resource "github_membership" "ajpauwels" {
@@ -20,14 +20,4 @@ resource "github_membership" "ajpauwels" {
 resource "github_membership" "capt_haddock" {
   username = "capt-haddock"
   role     = "admin"
-}
-
-resource "github_membership" "howhelan" {
-  username = "howhelan"
-  role     = "member"
-}
-
-resource "github_membership" "costaneto" {
-  username = "costaneto"
-  role     = "member"
 }

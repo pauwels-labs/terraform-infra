@@ -15,6 +15,10 @@ terraform {
       source = "mrparkers/keycloak"
       version = "4.2.0"
     }
+    gpg = {
+      source = "invidian/gpg"
+      version = "0.3.1"
+    }
   }
 }
 
