@@ -51,6 +51,14 @@ resource "aws_organizations_organizational_unit" "sandbox" {
   parent_id = aws_organizations_organization.this.roots[0].id
 }
 
+# For testing out pirate-cloud
+resource "aws_organizations_account" "sandbox_pirate_cloud" {
+  name  = "Sandbox Pirate Cloud"
+  email = "aws+sandbox-pirate-cloud@bitmantle.com"
+  parent_id = aws_organizations_organizational_unit.sandbox.id
+  iam_user_access_to_billing = "ALLOW"
+}
+
 # Shared global infrastructure, divided into software-development
 # lifecycle (SDLC) and production OUs
 resource "aws_organizations_organizational_unit" "infrastructure" {

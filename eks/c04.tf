@@ -5,13 +5,13 @@ provider "kubernetes" {
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
     command     = "aws"
-    args        = ["eks", "get-token", "--cluster-name", local.cluster_create[local.cluster_index[4]] ? module.c4[0].cluster_id : "", "--region", var.cluster_region, "--profile", "mfa", "--role-arn", local.cluster_account_role_arn]
+    args        = ["eks", "get-token", "--cluster-name", local.cluster_create[local.cluster_index[4]] ? module.c4[0].cluster_name : "", "--region", var.cluster_region, "--profile", "mfa", "--role-arn", local.cluster_account_role_arn]
   }
 }
 
 module "c4" {
   source    = "terraform-aws-modules/eks/aws"
-  version   = "18.26.3"
+  version   = "18.31.2"
   count     = local.cluster_create[local.cluster_index[4]] ? 1 : 0
   providers = {
     aws        = aws.cluster
@@ -46,6 +46,11 @@ module "c4" {
   iam_role_name            = local.cluster_iam_role_name[local.cluster_index[4]]
   iam_role_use_name_prefix = false
 
+  # Upgrade EKS module from 18.x -> 19.x
+
+  # This upgrade set create_kms_key to true, which we do not need as
+  # we manually create a KMS key here
+  create_kms_key                            = false
   cluster_encryption_policy_name            = local.cluster_encryption_policy_name[local.cluster_index[4]]
   cluster_encryption_policy_use_name_prefix = false
   cluster_encryption_config                 = [
@@ -57,9 +62,15 @@ module "c4" {
     }
   ]
 
+
   vpc_id     = aws_vpc.cluster.id
   subnet_ids = [for subnet in slice(aws_subnet.private, local.cluster_index[4] * local.az_count, local.cluster_index[4] * local.az_count + local.az_count): subnet.id]
 
+  # Upgrade EKS module from 18.x -> 19.x
+
+  # This upgrade introduced default node security group rules
+  # including 100% egress access, which is not acceptable
+  # node_security_group_enable_recommended_rules = false
   node_security_group_additional_rules = merge(local.nsgr_conditional_rules, {
     allow_istio_webhook = {
       description                   = "Cluster API to Istio webhook"
@@ -74,15 +85,6 @@ module "c4" {
       description                   = "Cluster API to prometheus adapter for metrics"
       from_port                     = 6443
       to_port                       = 6443
-      protocol                      = "tcp"
-      type                          = "ingress"
-      source_cluster_security_group = true
-    }
-
-    allow_tekton_webhook = {
-      description                   = "Cluster API to Tekton webhook and Gatekeeper webhook"
-      from_port                     = 8443
-      to_port                       = 8443
       protocol                      = "tcp"
       type                          = "ingress"
       source_cluster_security_group = true
@@ -140,6 +142,15 @@ module "c4" {
       protocol    = "tcp"
       type        = "egress"
       self        = true
+    }
+
+    allow_tekton_webhook = {
+      description                   = "Cluster API to Tekton webhook and Gatekeeper webhook"
+      from_port                     = 8443
+      to_port                       = 8443
+      protocol                      = "tcp"
+      type                          = "ingress"
+      source_cluster_security_group = true
     }
 
     allow_aws_lb_controller_webhook = {

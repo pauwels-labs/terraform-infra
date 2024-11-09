@@ -3,7 +3,7 @@ cluster_region       = "eu-west-1"
 cluster_name         = "lefranc"
 cluster_description  = "Contains infrastructure management services for Pauwels Labs"
 enabled_logs         = []
-cluster_version      = "1.27"
+cluster_version      = "1.29"
 cluster_vpc_cidr     = "10.10.0.0/16"
 cluster_service_cidr = "10.100.0.0/16"
 ha_nat_gateways      = false
@@ -14,7 +14,6 @@ cluster_account_id               = "140327370353"
 cluster_account_assume_role_name = "OrganizationAccountAccessRole"
 
 cluster_instance_types = [
-  "a1.xlarge",
   "m5.xlarge",
   "m5d.xlarge",
   "m5a.xlarge",
@@ -23,7 +22,6 @@ cluster_instance_types = [
   "m5dn.xlarge",
   "m5zn.xlarge",
   "m6a.xlarge",
-  "m6g.xlarge",
   "m6i.xlarge",
   "m6in.xlarge",
   "m6idn.xlarge",

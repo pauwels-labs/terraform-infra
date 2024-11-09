@@ -93,6 +93,7 @@ data "aws_iam_policy_document" "grant_root_administrator_role" {
       "arn:aws:iam::${aws_organizations_account.databases_prod.id}:role/OrganizationAccountAccessRole",
       "arn:aws:iam::${aws_organizations_account.engineering_dev.id}:role/OrganizationAccountAccessRole",
       "arn:aws:iam::${aws_organizations_account.engineering_deployments_prod.id}:role/OrganizationAccountAccessRole",
+      "arn:aws:iam::${aws_organizations_account.sandbox_pirate_cloud.id}:role/OrganizationAccountAccessRole",
     ]
   }
 }
@@ -319,6 +320,27 @@ resource "aws_iam_policy" "grant_deployments_prod_engineering_deployments_prod_a
   description = "Grants access to the OrganizationAccountAccessRole in the Deployments/Prod/Engineering Deployments Prod account"
 
   policy = data.aws_iam_policy_document.grant_deployments_prod_engineering_deployments_prod_administrator_role.json
+}
+
+data "aws_iam_policy_document" "grant_sandbox_pirate_cloud_administrator_role" {
+  statement {
+    sid = "AllowAssumeOrganizationAccountAccessRole"
+    effect = "Allow"    
+    actions = [
+      "sts:AssumeRole"
+    ]
+    resources = [
+      "arn:aws:iam::${aws_organizations_account.sandbox_pirate_cloud.id}:role/OrganizationAccountAccessRole"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "grant_sandbox_pirate_cloud_administrator_role" {
+  name = "GrantAccessToSandboxPirateCloudAdministratorRole"
+  path = "/"
+  description = "Grants access to the OrganizationAccountAccessRole in the Sandbox/Pirate Cloud account"
+
+  policy = data.aws_iam_policy_document.grant_sandbox_pirate_cloud_administrator_role.json
 }
 
 data "aws_iam_policy_document" "grant_self_service_auth_with_mfa" {

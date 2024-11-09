@@ -88,6 +88,16 @@ resource "aws_iam_group_policy_attachment" "root_administrator_role" {
   policy_arn = aws_iam_policy.grant_root_administrator_role.arn
 }
 
+# Group for all users with access to Sandbox/Pirate Cloud
+resource "aws_iam_group" "sandbox_pirate_cloud_administrators" {
+  name = "SandboxPirateCloudAdministrators"
+}
+
+resource "aws_iam_group_policy_attachment" "sandbox_pirate_cloud_administrator_role" {
+  group = aws_iam_group.sandbox_pirate_cloud_administrators.name
+  policy_arn = aws_iam_policy.grant_sandbox_pirate_cloud_administrator_role.arn
+}
+
 # All new users that have not yet signed in should be in this group and this group ONLY.
 # The only permissions given to such a user is the ability to change its own password.
 # After the user has logged in and changed its password, the user's group membership

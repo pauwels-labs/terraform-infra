@@ -38,7 +38,8 @@ services                  = [
     root_url              = "http://localhost:8000"
     base_url              = "http://localhost:8000"
     valid_redirect_uris   = [
-      "/*"
+      "/*",
+      "https://network.pauwelslabs.com/*"
     ]
   },
   {

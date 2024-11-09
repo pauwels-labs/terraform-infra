@@ -58,8 +58,13 @@ resource "aws_ecr_repository_policy" "cert_manager_cainjector" {
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
 
-resource "aws_ecr_repository_policy" "cert_manager_ctl" {
-  repository = aws_ecr_repository.cert_manager_ctl.name
+resource "aws_ecr_repository_policy" "cert_manager_acmeresolver" {
+  repository = aws_ecr_repository.cert_manager_acmeresolver.name
+  policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "cert_manager_startupapicheck" {
+  repository = aws_ecr_repository.cert_manager_startupapicheck.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
 
@@ -183,33 +188,33 @@ resource "aws_ecr_repository_policy" "ebs_csi_driver" {
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
 
-resource "aws_ecr_repository_policy" "csi_provisioner" {
-  repository = aws_ecr_repository.csi_provisioner.name
+resource "aws_ecr_repository_policy" "amazon_csi_provisioner" {
+  repository = aws_ecr_repository.amazon_csi_provisioner.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
 
-resource "aws_ecr_repository_policy" "csi_attacher" {
-  repository = aws_ecr_repository.csi_attacher.name
+resource "aws_ecr_repository_policy" "amazon_csi_attacher" {
+  repository = aws_ecr_repository.amazon_csi_attacher.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
 
-resource "aws_ecr_repository_policy" "csi_snapshotter" {
-  repository = aws_ecr_repository.csi_snapshotter.name
+resource "aws_ecr_repository_policy" "amazon_csi_snapshotter" {
+  repository = aws_ecr_repository.amazon_csi_snapshotter.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
 
-resource "aws_ecr_repository_policy" "csi_livenessprobe" {
-  repository = aws_ecr_repository.csi_livenessprobe.name
+resource "aws_ecr_repository_policy" "amazon_csi_livenessprobe" {
+  repository = aws_ecr_repository.amazon_csi_livenessprobe.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
 
-resource "aws_ecr_repository_policy" "csi_resizer" {
-  repository = aws_ecr_repository.csi_resizer.name
+resource "aws_ecr_repository_policy" "amazon_csi_resizer" {
+  repository = aws_ecr_repository.amazon_csi_resizer.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
 
-resource "aws_ecr_repository_policy" "csi_node_driver_registrar" {
-  repository = aws_ecr_repository.csi_node_driver_registrar.name
+resource "aws_ecr_repository_policy" "amazon_csi_node_driver_registrar" {
+  repository = aws_ecr_repository.amazon_csi_node_driver_registrar.name
   policy = data.aws_iam_policy_document.pauwels_labs_ecr_policy.json
 }
 

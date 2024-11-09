@@ -62,12 +62,17 @@ services                  = [
         "name" = "prod"
       }
     ]
-  },
-  {
-    "name"          = "nodejs-example",
-    "template_name" = "nodejs-express",
-    "domain"        = "pauwelslabs.com"
   }
+  # {
+  #   "name"          = "nodejs-example",
+  #   "template_name" = "nodejs-express",
+  #   "domain"        = "pauwelslabs.com"
+  #   "envs"            = [
+  #     {
+  #       "name" = "dev"
+  #     }
+  #   ]
+  # }
 ]
 tenant_name               = "pauwels-labs-main"
 tenant_repo_org_name      = "pauwels-labs"

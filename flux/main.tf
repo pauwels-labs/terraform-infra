@@ -3,8 +3,8 @@ terraform {
     bucket = "terraform-backend-20210130214355088200000001"
     key = "flux.tfstate"
     region = "eu-west-1"
-    profile = "mfa"    
-    role_arn = "arn:aws:iam::404672225309:role/TerraformBackend"    
+    profile = "mfa"
+    role_arn = "arn:aws:iam::404672225309:role/TerraformBackend"
     acl = "private"
     encrypt = true
     kms_key_id = "alias/terraform"
@@ -39,7 +39,7 @@ provider "flux" {
     url   = "https://${var.repository_host_domain}/${var.org_name}/${var.repository_name}.git"
     http  = {
       username = "capt-haddock"
-      password = "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"
+      password = ""
     }
     # ssh = {
     #   username    = "git"
@@ -62,12 +62,14 @@ data "terraform_remote_state" "eks" {
     bucket = "terraform-backend-20210130214355088200000001"
     key = "eks.tfstate"
     region = "eu-west-1"
-    profile = "mfa"    
-    role_arn = "arn:aws:iam::404672225309:role/TerraformBackend"    
+    profile = "mfa"
     acl = "private"
     encrypt = true
     kms_key_id = "alias/terraform"
     workspace_key_prefix = "workspaces"
+    assume_role = {
+      role_arn = "arn:aws:iam::404672225309:role/TerraformBackend"
+    }
   }
 }
 
@@ -79,11 +81,13 @@ data "terraform_remote_state" "repositories" {
     bucket = "terraform-backend-20210130214355088200000001"
     key = "repositories.tfstate"
     region = "eu-west-1"
-    profile = "mfa"    
-    role_arn = "arn:aws:iam::404672225309:role/TerraformBackend"    
+    profile = "mfa"
     acl = "private"
     encrypt = true
     kms_key_id = "alias/terraform"
     workspace_key_prefix = "workspaces"
+    assume_role = {
+      role_arn = "arn:aws:iam::404672225309:role/TerraformBackend"
+    }
   }
 }

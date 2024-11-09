@@ -6,7 +6,7 @@ tenant_names                 = [
 ]
 oidc_url                     = "identity.pauwelslabs.com/realms/pauwels-labs-main"
 oidc_thumbprint              = [
-  "933c6ddee95c9c41a40f9f50493d82be03ad87bf"
+  "a053375bfe84e8b748782c7cee15827a6af5a405"
 ]
 audiences                    = {
   "azp": ["aws"],

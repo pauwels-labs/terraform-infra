@@ -6,8 +6,23 @@ provider "aws" {
   }
 }
 
+provider "aws" {
+  alias = "sandbox_pirate_cloud"
+  region = "eu-west-1"
+  profile = "mfa"
+  assume_role {
+    role_arn = "arn:aws:iam::730335667198:role/OrganizationAccountAccessRole"
+  }
+}
+
 resource "aws_route53_zone" "pauwelslabs_com" {
   name = "pauwelslabs.com"
+}
+
+resource "aws_route53_zone" "armada_pauwelslabs_com" {
+  provider = aws.sandbox_pirate_cloud
+
+  name = "armada.pauwelslabs.com"
 }
 
 resource "aws_route53_zone" "dev_pauwelslabs_com" {
@@ -191,6 +206,14 @@ resource "aws_route53_record" "pauwelslabs_com_txt_keybase_pauwelslabs_verificat
   ]
 }
 
+resource "aws_route53_record" "pauwelslabs_com_armada_ns" {
+  zone_id = aws_route53_zone.pauwelslabs_com.zone_id
+  name    = "armada.pauwelslabs.com"
+  type    = "NS"
+  ttl     = "60"
+  records = aws_route53_zone.armada_pauwelslabs_com.name_servers
+}
+
 resource "aws_route53_record" "pauwelslabs_com_dev_ns" {
   zone_id = aws_route53_zone.pauwelslabs_com.zone_id
   name    = "dev.pauwelslabs.com"
@@ -205,4 +228,47 @@ resource "aws_route53_record" "pauwelslabs_com_staging_ns" {
   type    = "NS"
   ttl     = "60"
   records = aws_route53_zone.staging_pauwelslabs_com.name_servers
+}
+
+resource "aws_route53_record" "bitmantle_com_ai_ns" {
+  zone_id = aws_route53_zone.bitmantle_com.zone_id
+  name    = "ai.bitmantle.com"
+  type    = "NS"
+  ttl     = "60"
+  records = [
+    "ns-1028.awsdns-00.org.",
+    "ns-743.awsdns-28.net.",
+    "ns-1679.awsdns-17.co.uk.",
+    "ns-463.awsdns-57.com."
+  ]
+}
+
+resource "aws_route53_record" "bitmantle_com_costa_a" {
+  zone_id = aws_route53_zone.bitmantle_com.zone_id
+  name    = "bitmantle.com"
+  type    = "A"
+  ttl     = "60"
+  records = [
+    "172.66.0.70"
+  ]
+}
+
+resource "aws_route53_record" "bitmantle_com_costa_cname" {
+  zone_id = aws_route53_zone.bitmantle_com.zone_id
+  name    = "www"
+  type    = "CNAME"
+  ttl     = "60"
+  records = [
+    "bitmantle.com"
+  ]
+}
+
+resource "aws_route53_record" "bitmantle_com_costa_acme_cname" {
+  zone_id = aws_route53_zone.bitmantle_com.zone_id
+  name    = "_acme-challenge"
+  type    = "CNAME"
+  ttl     = "60"
+  records = [
+    "bitmantle.com.e19495872d45cfe6.dcv.cloudflare.com."
+  ]
 }

@@ -1,9 +1,9 @@
 provider "aws" {
   region = "eu-west-1"
-  profile = "mfa"  
+  profile = "mfa"
   assume_role {
     role_arn = "arn:aws:iam::274295908850:role/OrganizationAccountAccessRole"
-  }  
+  }
 }
 
 resource "aws_ecr_repository" "pauwels_labs_redact_client" {
@@ -110,8 +110,16 @@ resource "aws_ecr_repository" "cert_manager_cainjector" {
   }
 }
 
-resource "aws_ecr_repository" "cert_manager_ctl" {
-  name                 = "jetstack/cert-manager-ctl"
+resource "aws_ecr_repository" "cert_manager_acmeresolver" {
+  name                 = "jetstack/cert-manager-acmeresolver"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "cert_manager_startupapicheck" {
+  name                 = "jetstack/cert-manager-startupapicheck"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
@@ -310,48 +318,48 @@ resource "aws_ecr_repository" "ebs_csi_driver" {
   }
 }
 
-resource "aws_ecr_repository" "csi_provisioner" {
-  name                 = "sig-storage/csi-provisioner"
+resource "aws_ecr_repository" "amazon_csi_provisioner" {
+  name                 = "amazon/kubernetes-csi/external-provisioner"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
   }
 }
 
-resource "aws_ecr_repository" "csi_attacher" {
-  name                 = "sig-storage/csi-attacher"
+resource "aws_ecr_repository" "amazon_csi_attacher" {
+  name                 = "amazon/kubernetes-csi/external-attacher"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
   }
 }
 
-resource "aws_ecr_repository" "csi_snapshotter" {
-  name                 = "sig-storage/csi-snapshotter"
+resource "aws_ecr_repository" "amazon_csi_snapshotter" {
+  name                 = "amazon/kubernetes-csi/external-snapshotter"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
   }
 }
 
-resource "aws_ecr_repository" "csi_livenessprobe" {
-  name                 = "sig-storage/livenessprobe"
+resource "aws_ecr_repository" "amazon_csi_livenessprobe" {
+  name                 = "amazon/kubernetes-csi/livenessprobe"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
   }
 }
 
-resource "aws_ecr_repository" "csi_resizer" {
-  name                 = "sig-storage/csi-resizer"
+resource "aws_ecr_repository" "amazon_csi_resizer" {
+  name                 = "amazon/kubernetes-csi/external-resizer"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
   }
 }
 
-resource "aws_ecr_repository" "csi_node_driver_registrar" {
-  name                 = "sig-storage/csi-node-driver-registrar"
+resource "aws_ecr_repository" "amazon_csi_node_driver_registrar" {
+  name                 = "amazon/kubernetes-csi/node-driver-registrar"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false

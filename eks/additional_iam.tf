@@ -362,7 +362,7 @@ resource "aws_iam_role_policy_attachment" "aws_lb_controller" {
 # Flux ECR
 data aws_iam_policy_document "pauwels_labs_ecr_policy" {
   statement {
-    sid = "AllowRWAccessToPauwelsLabsECR"    
+    sid = "AllowRWAccessToPauwelsLabsECR"
     actions = [
       "ecr:GetDownloadUrlForLayer",
       "ecr:BatchGetImage",
@@ -377,7 +377,7 @@ data aws_iam_policy_document "pauwels_labs_ecr_policy" {
     ]
   }
   statement {
-    sid = "AllowAuthTokenGeneration"    
+    sid = "AllowAuthTokenGeneration"
     actions = [
       "ecr:GetAuthorizationToken"
     ]
@@ -707,7 +707,7 @@ data "aws_iam_policy_document" "ebs_csi_driver_kms" {
       }
     }
   }
-  
+
   dynamic "statement" {
     for_each = aws_kms_alias.ebs_volume_encryption
 
@@ -748,7 +748,7 @@ data "aws_iam_policy_document" "ebs_csi_driver_kms" {
 
 resource "aws_iam_policy" "ebs_csi_driver_kms" {
   provider = aws.cluster
-  
+
   name        = "AllowEBSCSIDriverKMSAccess-${var.cluster_name}"
   description = "Allows the EBS CSI driver in the ${var.cluster_name} k8s clusters to encrypt and decrypt EBS volumes with its specific KMS key"
   policy      = data.aws_iam_policy_document.ebs_csi_driver_kms.json
@@ -852,12 +852,12 @@ data "aws_iam_policy_document" "vault_auto_unseal" {
         ]
       }
     }
-  }  
+  }
 }
 
 resource "aws_iam_policy" "vault_auto_unseal" {
   provider = aws.cluster
-  
+
   name        = "AllowVaultAutoUnsealAccess-${var.cluster_name}"
   description = "Allows the vault instance in the ${var.cluster_name} k8s clusters to unseal itself automatically using a key in KMS"
   policy      = data.aws_iam_policy_document.vault_auto_unseal.json
@@ -946,18 +946,18 @@ data "aws_iam_policy_document" "cluster_autoscaler" {
       resources = ["*"]
       condition {
         test     = "StringEquals"
-        variable = "aws:ResourceTag/k8s.io/cluster-autoscaler/${statement.value.cluster_id}"
+        variable = "aws:ResourceTag/k8s.io/cluster-autoscaler/${statement.value.cluster_name}"
         values   = [
           "owned"
         ]
       }
     }
-  }  
+  }
 }
 
 resource "aws_iam_policy" "cluster_autoscaler" {
   provider = aws.cluster
-  
+
   name        = "AllowClusterAutoscaling-${var.cluster_name}"
   description = "Allows the cluster autoscaler instance in the ${var.cluster_name} k8s clusters to manage auto scaling groups"
   policy      = data.aws_iam_policy_document.cluster_autoscaler.json
@@ -1067,7 +1067,7 @@ data "aws_iam_policy_document" "mimir" {
 resource "aws_iam_policy" "mimir" {
   provider = aws.cluster
   count = var.use_mimir ? 1 : 0
-  
+
   name        = "AllowMimir-${var.cluster_name}"
   description = "Allows the various Mimir services in the ${var.cluster_name} k8s clusters to store objects in S3 buckets"
   policy      = data.aws_iam_policy_document.mimir[0].json
@@ -1184,7 +1184,7 @@ data "aws_iam_policy_document" "loki" {
 resource "aws_iam_policy" "loki" {
   provider = aws.cluster
   count = var.use_loki ? 1 : 0
-  
+
   name        = "AllowLoki-${var.cluster_name}"
   description = "Allows the various Loki services in the ${var.cluster_name} k8s clusters to store objects in S3 buckets"
   policy      = data.aws_iam_policy_document.loki[0].json
@@ -1298,7 +1298,7 @@ data "aws_iam_policy_document" "tempo" {
 resource "aws_iam_policy" "tempo" {
   provider = aws.cluster
   count = var.use_tempo ? 1 : 0
-  
+
   name        = "AllowTempo-${var.cluster_name}"
   description = "Allows the various Tempo services in the ${var.cluster_name} k8s clusters to store objects in S3 buckets"
   policy      = data.aws_iam_policy_document.tempo[0].json

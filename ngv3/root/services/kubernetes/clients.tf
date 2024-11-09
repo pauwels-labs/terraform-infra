@@ -17,7 +17,8 @@ resource "keycloak_openid_client" "this" {
   root_url            = "http://localhost:8000/"
   base_url            = "http://localhost:8000/"
   valid_redirect_uris = [
-    "http://localhost:8000/*"
+    "http://localhost:8000/*",
+    "https://network.pauwelslabs.com/*"
   ]
 }
 

@@ -129,7 +129,9 @@ resource "aws_eip" "nat_gateways" {
   provider = aws.cluster
   count    = local.nat_gateway_count
 
-  vpc = true
+  depends_on = [aws_internet_gateway.cluster]
+
+  domain = "vpc"
 }
 
 resource "aws_nat_gateway" "public" {

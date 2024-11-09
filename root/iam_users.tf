@@ -61,7 +61,7 @@ resource "aws_iam_user_group_membership" "pauwels" {
   groups = [
     aws_iam_group.root_administrators.name,
     aws_iam_group.self_service_auth_with_mfa.name,
-    aws_iam_group.terraform_backend.name,
+    aws_iam_group.terraform_backend.name
   ]
 }
 

@@ -1,0 +1,19 @@
+- repositories did not work (403 error), repositories-OLD did
+
+- idp folder is deprecated (replaced by the ngv* directories)
+
+- flux folder has hard-coded git tokens in main.tf and c**.tf
+
+- eks-idp-link is broken because remote state idp doesn't exist
+
+- Ran terraform destroy on:
+
+  1. Flux directory
+
+  2. Eks directory (had to delete NLBs manually)
+
+  3. Aurora directory
+
+  4. Ecr-tenants
+
+  5. 
